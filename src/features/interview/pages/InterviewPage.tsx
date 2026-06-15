@@ -13,34 +13,8 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
-  Award,
 } from "lucide-react";
 import type { InterviewAnswer } from "@/features/interview/types/interview";
-
-/* ─── Circular score ring ─── */
-const ScoreRing: React.FC<{ score: number }> = ({ score }) => {
-  const pct = Math.min(score, 100);
-  const r = 52;
-  const circ = 2 * Math.PI * r;
-  const filled = (pct / 100) * circ;
-  const color = pct >= 80 ? "#22c55e" : pct >= 60 ? "#f59e0b" : "#ef4444";
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-[130px] h-[130px]">
-        <svg width="130" height="130" viewBox="0 0 130 130" className="-rotate-90">
-          <circle cx="65" cy="65" r={r} fill="none" stroke="currentColor" className="text-border" strokeWidth="8" />
-          <circle cx="65" cy="65" r={r} fill="none" stroke={color} strokeWidth="8"
-            strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
-            className="transition-[stroke-dasharray] duration-1000 ease-out" />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-foreground leading-none">{pct}%</span>
-          <span className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-wider">Score</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* ─── Expandable review card ─── */
 const ReviewCard: React.FC<{
@@ -63,11 +37,10 @@ const ReviewCard: React.FC<{
           <span className="text-muted-foreground mr-2 font-medium">{idx + 1}.</span>
           {detail.question}
         </span>
-        {open ? (
-          <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
-        )}
+        {open
+          ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
+          : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+        }
       </button>
 
       {open && (
@@ -116,7 +89,8 @@ const InterviewPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [isSubmitted]);
 
-  const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const formatTime = (s: number) =>
+    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   /* ── Loading ── */
   if (isLoading) {
@@ -140,7 +114,12 @@ const InterviewPage: React.FC = () => {
         <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
           <XCircle className="w-10 h-10 text-destructive mx-auto mb-3" />
           <p className="text-[15px] text-muted-foreground mb-4">Failed to load interview questions.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors">Go Back</button>
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -152,7 +131,12 @@ const InterviewPage: React.FC = () => {
       <div className="max-w-[720px] mx-auto px-6 py-8">
         <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
           <p className="text-[15px] text-muted-foreground mb-4">No questions found for this interview.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors">Go Back</button>
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -161,80 +145,47 @@ const InterviewPage: React.FC = () => {
   /* ── Results view ── */
   if (isSubmitted && submitInterview.data) {
     const result = submitInterview.data;
-    const percentage = result.totalQuestions > 0
-      ? Math.round((result.correctAnswers / result.totalQuestions) * 100)
-      : 0;
-    const status = percentage >= 80 ? "EXCELLENT" : percentage >= 60 ? "GOOD" : "NEEDS IMPROVEMENT";
-    const statusColor = percentage >= 80 ? "text-emerald-500" : percentage >= 60 ? "text-amber-500" : "text-red-500";
-    const completionMins = Math.floor((45 * 60 - timer) / 60);
-    const completionSecs = (45 * 60 - timer) % 60;
 
     return (
       <div className="bg-background min-h-screen font-sans">
         <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-16">
 
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight leading-tight">Interview Results</h1>
-              <p className="text-sm text-muted-foreground mt-1">Technical Assessment</p>
-            </div>
-            <div className="flex flex-col items-start sm:items-end gap-1">
-              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">OVERALL STATUS</span>
-              <span className={`flex items-center gap-1.5 text-base font-extrabold ${statusColor}`}>
-                <Award className="w-4 h-4" />
-                {status}
-              </span>
-            </div>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mb-8">
+            Interview Results
+          </h1>
 
-          {/* Score card */}
-          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm mb-6">
-            <div className="flex flex-col sm:flex-row items-center gap-8">
-              {/* Score ring */}
-              <div className="shrink-0">
-                <ScoreRing score={percentage} />
-              </div>
-
-              {/* Stats */}
-              <div className="flex-1 w-full space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-black text-foreground">{result.correctAnswers}</p>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Correct</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-black text-foreground">{result.totalQuestions}</p>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Total Questions</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-black text-foreground">{result.totalQuestions - result.correctAnswers}</p>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Incorrect</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
-                    <p className="text-2xl font-black text-foreground">{completionMins}m {String(completionSecs).padStart(2, "0")}s</p>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Time Taken</p>
-                  </div>
-                </div>
-              </div>
+          {/* Score — only real data */}
+          <div className="bg-card border border-border rounded-2xl p-10 shadow-sm mb-8 flex flex-col items-center text-center">
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              Your Score
+            </p>
+            <div className="flex items-end justify-center gap-3">
+              <span className="text-8xl font-black text-primary leading-none">{result.correctAnswers}</span>
+              <span className="text-4xl font-black text-muted-foreground mb-2">/ {result.totalQuestions}</span>
             </div>
+            <p className="text-base text-muted-foreground mt-4">correct answers</p>
           </div>
 
           {/* Detailed review */}
-          <div className="mt-8">
-            <h2 className="text-lg font-bold text-foreground mb-1">Detailed Review</h2>
-            <p className="text-sm text-muted-foreground mb-5">Review your answers and understand the correct solutions.</p>
-            <div className="space-y-4">
-              {result.details.map((detail, idx) => (
-                <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
-              ))}
-            </div>
+          <h2 className="text-lg font-bold text-foreground mb-1">Detailed Review</h2>
+          <p className="text-sm text-muted-foreground mb-5">
+            Review your answers and understand the correct solutions.
+          </p>
+          <div className="space-y-4">
+            {result.details.map((detail, idx) => (
+              <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
+            ))}
           </div>
 
-          {/* Bottom actions */}
+          {/* Actions */}
           <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10">
             <button
-              onClick={() => { setIsSubmitted(false); setAnswers([]); setCurrentQuestionIndex(0); setTimer(45 * 60); }}
+              onClick={() => {
+                setIsSubmitted(false);
+                setAnswers([]);
+                setCurrentQuestionIndex(0);
+                setTimer(45 * 60);
+              }}
               className="h-10 px-6 border border-border rounded-xl bg-card text-sm font-bold text-foreground cursor-pointer hover:bg-muted transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
               <RotateCcw className="w-3.5 h-3.5" /> Retake
@@ -273,7 +224,10 @@ const InterviewPage: React.FC = () => {
   const handleNext = () => {
     if (isLastQuestion) {
       if (!jobId) return;
-      submitInterview.mutate({ jobId, request: { answers } }, { onSuccess: () => setIsSubmitted(true) });
+      submitInterview.mutate(
+        { jobId, request: { answers } },
+        { onSuccess: () => setIsSubmitted(true) }
+      );
     } else {
       setCurrentQuestionIndex((p) => p + 1);
     }
@@ -286,7 +240,7 @@ const InterviewPage: React.FC = () => {
     <div className="bg-background min-h-screen font-sans">
       <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-24">
 
-        {/* Top bar: breadcrumb + flag + timer */}
+        {/* Top bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <span className="text-sm text-muted-foreground font-medium">
             Technical Assessment <span className="mx-1 text-border">/</span>
@@ -296,13 +250,19 @@ const InterviewPage: React.FC = () => {
             <button
               onClick={() => setFlagged((f) => !f)}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-4 border rounded-xl text-xs font-bold transition-all shadow-sm
-                ${flagged ? "bg-amber-500/10 border-amber-500/30 text-amber-500" : "bg-card border-border text-muted-foreground hover:bg-muted"}`}
+                ${flagged
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-500"
+                  : "bg-card border-border text-muted-foreground hover:bg-muted"
+                }`}
             >
               <Flag className="w-3.5 h-3.5" />
               {flagged ? "Flagged" : "Flag"}
             </button>
             <div className={`flex items-center gap-2 h-9 px-4 border rounded-xl text-sm font-bold shadow-sm
-              ${timerWarning ? "bg-red-500/10 border-red-500/30 text-red-500 animate-pulse" : "bg-card border-border text-foreground"}`}>
+              ${timerWarning
+                ? "bg-red-500/10 border-red-500/30 text-red-500 animate-pulse"
+                : "bg-card border-border text-foreground"
+              }`}>
               <Clock className="w-3.5 h-3.5" />
               {formatTime(timer)}
             </div>
@@ -316,7 +276,10 @@ const InterviewPage: React.FC = () => {
             <span>{Math.round(progress)}% Done</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden shadow-inner">
-            <div className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
@@ -326,7 +289,6 @@ const InterviewPage: React.FC = () => {
             {currentQuestion.question}
           </h2>
 
-          {/* Answer options */}
           <div className="space-y-3">
             {currentQuestion.options.map((option) => {
               const selected = currentAnswer?.selectedOptionId === option.id;
@@ -335,10 +297,16 @@ const InterviewPage: React.FC = () => {
                   key={option.id}
                   onClick={() => handleSelectOption(option.id)}
                   className={`flex items-center gap-4 p-4 sm:p-5 border-2 rounded-2xl cursor-pointer transition-all duration-200 group
-                    ${selected ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/40 bg-card hover:bg-muted/50"}`}
+                    ${selected
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/40 bg-card hover:bg-muted/50"
+                    }`}
                 >
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all
-                    ${selected ? "border-primary bg-primary" : "border-muted-foreground/40 group-hover:border-primary/60 bg-background"}`}>
+                    ${selected
+                      ? "border-primary bg-primary"
+                      : "border-muted-foreground/40 group-hover:border-primary/60 bg-background"
+                    }`}>
                     {selected && <div className="w-2 h-2 rounded-full bg-primary-foreground shadow-sm" />}
                   </div>
                   <span className={`text-sm sm:text-base font-semibold leading-relaxed transition-colors
@@ -365,7 +333,10 @@ const InterviewPage: React.FC = () => {
             onClick={handleNext}
             disabled={!hasSelected || submitInterview.isPending}
             className={`flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold transition-all shadow-md
-              ${!hasSelected || submitInterview.isPending ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95"}`}
+              ${!hasSelected || submitInterview.isPending
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95"
+              }`}
           >
             {submitInterview.isPending ? "Submitting..." : isLastQuestion ? "Submit Interview" : "Next Question"}
             {!isLastQuestion && <ArrowRight className="w-4 h-4" />}
