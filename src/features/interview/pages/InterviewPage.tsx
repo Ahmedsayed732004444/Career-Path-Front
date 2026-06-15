@@ -30,15 +30,15 @@ const ScoreRing: React.FC<{ score: number; label: string }> = ({ score }) => {
     <div className="flex flex-col items-center">
       <div className="relative w-[130px] h-[130px]">
         <svg width="130" height="130" viewBox="0 0 130 130" className="-rotate-90">
-          <circle cx="65" cy="65" r={r} fill="none" stroke="#f1f5f9" strokeWidth="8" />
+          <circle cx="65" cy="65" r={r} fill="none" stroke="currentColor" className="text-border" strokeWidth="8" />
           <circle cx="65" cy="65" r={r} fill="none" stroke={color} strokeWidth="8"
             strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
             className="transition-[stroke-dasharray] duration-1000 ease-out" />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-slate-900 leading-none">{score}</span>
-          <span className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">OF 100</span>
-          <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full mt-1.5 border border-blue-100 uppercase">Top 10%</span>
+          <span className="text-3xl font-black text-foreground leading-none">{score}</span>
+          <span className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-wider">OF 100</span>
+          <span className="text-[9px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full mt-1.5 border border-primary/20 uppercase">Top 10%</span>
         </div>
       </div>
     </div>
@@ -49,11 +49,11 @@ const ScoreRing: React.FC<{ score: number; label: string }> = ({ score }) => {
 const ProfBar: React.FC<{ label: string; value: number }> = ({ label, value }) => (
   <div className="mb-2.5">
     <div className="flex justify-between mb-1">
-      <span className="text-[12px] text-slate-600 font-medium">{label}</span>
-      <span className="text-[12px] font-bold text-slate-900">{value}%</span>
+      <span className="text-[12px] text-muted-foreground font-medium">{label}</span>
+      <span className="text-[12px] font-bold text-foreground">{value}%</span>
     </div>
-    <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-      <div className="h-full bg-blue-600 rounded-full transition-all duration-1000 ease-out" style={{ width: `${value}%` }} />
+    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+      <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: `${value}%` }} />
     </div>
   </div>
 );
@@ -65,46 +65,46 @@ const ReviewCard: React.FC<{
 }> = ({ idx, detail }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-all">
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm transition-all">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
+        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-muted/50 transition-colors"
       >
         {detail.isCorrect ? (
           <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
         ) : (
           <XCircle className="w-5 h-5 text-red-500 shrink-0" />
         )}
-        <span className="text-sm font-semibold text-slate-900 flex-1 leading-relaxed">
-          <span className="text-slate-400 mr-2 font-medium">{idx + 1}.</span>
+        <span className="text-sm font-semibold text-foreground flex-1 leading-relaxed">
+          <span className="text-muted-foreground mr-2 font-medium">{idx + 1}.</span>
           {detail.question}
         </span>
         {open ? (
-          <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
+          <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+          <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
         )}
       </button>
 
       {open && (
-        <div className="px-5 pb-5 pt-0 border-t border-slate-50 animate-in slide-in-from-top-2 duration-200">
+        <div className="px-5 pb-5 pt-0 border-t border-border/50 animate-in slide-in-from-top-2 duration-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-            <div className={`p-4 rounded-xl border ${detail.isCorrect ? "bg-emerald-50 border-emerald-100" : "bg-red-50 border-red-100"}`}>
-              <p className={`text-[10px] font-bold tracking-widest uppercase mb-2 ${detail.isCorrect ? "text-emerald-700" : "text-red-700"}`}>YOUR ANSWER</p>
-              <p className="text-sm text-slate-800 leading-relaxed">{detail.yourAnswer}</p>
+            <div className={`p-4 rounded-xl border ${detail.isCorrect ? "bg-emerald-500/10 border-emerald-500/20" : "bg-red-500/10 border-red-500/20"}`}>
+              <p className={`text-[10px] font-bold tracking-widest uppercase mb-2 ${detail.isCorrect ? "text-emerald-500" : "text-red-500"}`}>YOUR ANSWER</p>
+              <p className="text-sm text-foreground leading-relaxed">{detail.yourAnswer}</p>
             </div>
-            <div className="p-4 rounded-xl border bg-emerald-50 border-emerald-100">
-              <p className="text-[10px] font-bold tracking-widest uppercase text-emerald-700 mb-2">CORRECT ANSWER</p>
-              <p className="text-sm text-slate-800 leading-relaxed">{detail.correctAnswer}</p>
+            <div className="p-4 rounded-xl border bg-emerald-500/10 border-emerald-500/20">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-emerald-500 mb-2">CORRECT ANSWER</p>
+              <p className="text-sm text-foreground leading-relaxed">{detail.correctAnswer}</p>
             </div>
           </div>
           {detail.explanation && (
-            <div className="mt-4 p-4 rounded-xl bg-blue-50/30 border border-blue-100">
+            <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-2 mb-2">
-                <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-                <span className="text-xs font-bold text-slate-700">Expert Explanation</span>
+                <BookOpen className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-bold text-foreground">Expert Explanation</span>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed">{detail.explanation}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{detail.explanation}</p>
             </div>
           )}
         </div>
@@ -139,7 +139,7 @@ const InterviewPage: React.FC = () => {
     return (
       <div className="max-w-[720px] mx-auto px-6 py-8">
         <Skeleton className="h-2 rounded-full mb-8" />
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-8">
           <Skeleton className="h-7 w-3/5 mb-3" />
           <Skeleton className="h-4 w-full mb-2" />
           <Skeleton className="h-4 w-4/5 mb-7" />
@@ -153,10 +153,10 @@ const InterviewPage: React.FC = () => {
   if (error || !questions) {
     return (
       <div className="max-w-[720px] mx-auto px-6 py-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-10 text-center">
-          <XCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
-          <p className="text-[15px] text-slate-700 mb-4">Failed to load interview questions.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-4.5 border border-slate-200 rounded-lg bg-white cursor-pointer font-semibold text-[13.5px]">Go Back</button>
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
+          <XCircle className="w-10 h-10 text-destructive mx-auto mb-3" />
+          <p className="text-[15px] text-muted-foreground mb-4">Failed to load interview questions.</p>
+          <button onClick={() => navigate(-1)} className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors">Go Back</button>
         </div>
       </div>
     );
@@ -166,9 +166,9 @@ const InterviewPage: React.FC = () => {
   if (questions.length === 0) {
     return (
       <div className="max-w-[720px] mx-auto px-6 py-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-10 text-center">
-          <p className="text-[15px] text-slate-700 mb-4">No questions found for this interview.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-4.5 border border-slate-200 rounded-lg bg-white cursor-pointer font-semibold text-[13.5px]">Go Back</button>
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
+          <p className="text-[15px] text-muted-foreground mb-4">No questions found for this interview.</p>
+          <button onClick={() => navigate(-1)} className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors">Go Back</button>
         </div>
       </div>
     );
@@ -187,113 +187,115 @@ const InterviewPage: React.FC = () => {
     const growthAreas = ["Performance Optimization", "Webpack Config"];
 
     return (
-      <div className="max-w-[860px] mx-auto p-4 sm:p-8 pb-16 font-sans bg-slate-50 min-h-screen">
-        {/* Results header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight m-0">Interview Results</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              {result.totalQuestions > 0 ? "Alex" : "Candidate"} · Senior Frontend Developer Assessment
-            </p>
-          </div>
-          <div className="flex flex-col items-start sm:items-end gap-1">
-            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">OVERALL STATUS</span>
-            <span className={`flex items-center gap-1.5 text-base font-extrabold ${statusColor}`}>
-              <Award className="w-4 h-4" />
-              {status}
-            </span>
-          </div>
-        </div>
-
-        {/* Score card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-8 items-start">
-            {/* Score ring */}
-            <div className="flex justify-center">
-              <ScoreRing score={percentage} label="Score" />
-            </div>
-
-            {/* Strengths */}
+      <div className="bg-background min-h-screen font-sans">
+        <div className="max-w-[860px] mx-auto p-4 sm:p-8 pb-16">
+          {/* Results header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Target className="w-4 h-4 text-emerald-500" />
-                <span className="text-sm font-bold text-slate-900 uppercase tracking-wide">Strengths</span>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {strengths.map((s) => (
-                  <span key={s} className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[11px] font-semibold text-emerald-700">{s}</span>
-                ))}
-              </div>
-              <div className="space-y-2 pt-4 border-t border-slate-100">
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>Correctness</span>
-                  <span className="font-bold text-slate-900">{result.correctAnswers} / {result.totalQuestions}</span>
-                </div>
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>Completion Time</span>
-                  <span className="font-bold text-slate-900">{completionMins}m {String(completionSecs).padStart(2, "0")}s</span>
-                </div>
-              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight leading-tight m-0">Interview Results</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {result.totalQuestions > 0 ? "Alex" : "Candidate"} · Senior Frontend Developer Assessment
+              </p>
             </div>
+            <div className="flex flex-col items-start sm:items-end gap-1">
+              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">OVERALL STATUS</span>
+              <span className={`flex items-center gap-1.5 text-base font-extrabold ${statusColor}`}>
+                <Award className="w-4 h-4" />
+                {status}
+              </span>
+            </div>
+          </div>
 
-            {/* Growth + Market Readiness */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-4 h-4 text-amber-500" />
-                <span className="text-sm font-bold text-slate-900 uppercase tracking-wide">Growth Areas</span>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {growthAreas.map((g) => (
-                  <span key={g} className="px-2.5 py-1 rounded-full bg-amber-50 border border-amber-100 text-[11px] font-semibold text-amber-700">{g}</span>
-                ))}
+          {/* Score card */}
+          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-8 items-start">
+              {/* Score ring */}
+              <div className="flex justify-center">
+                <ScoreRing score={percentage} label="Score" />
               </div>
 
-              {/* Market readiness */}
-              <div className="pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span className="text-xs font-bold text-slate-700">Market Readiness</span>
+              {/* Strengths */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Target className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Strengths</span>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  Based on your score of {percentage}%, you demonstrate a strong command of core React principles.
-                </p>
-                <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">TECHNICAL PROFICIENCY</span>
-                  <ProfBar label="Core React" value={95} />
-                  <ProfBar label="Architecture" value={80} />
-                  <ProfBar label="Performance" value={65} />
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {strengths.map((s) => (
+                    <span key={s} className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-500">{s}</span>
+                  ))}
+                </div>
+                <div className="space-y-2 pt-4 border-t border-border">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Correctness</span>
+                    <span className="font-bold text-foreground">{result.correctAnswers} / {result.totalQuestions}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Completion Time</span>
+                    <span className="font-bold text-foreground">{completionMins}m {String(completionSecs).padStart(2, "0")}s</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Growth + Market Readiness */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Growth Areas</span>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {growthAreas.map((g) => (
+                    <span key={g} className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] font-semibold text-amber-500">{g}</span>
+                  ))}
+                </div>
+
+                {/* Market readiness */}
+                <div className="pt-4 border-t border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-xs font-bold text-foreground">Market Readiness</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                    Based on your score of {percentage}%, you demonstrate a strong command of core React principles.
+                  </p>
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">TECHNICAL PROFICIENCY</span>
+                    <ProfBar label="Core React" value={95} />
+                    <ProfBar label="Architecture" value={80} />
+                    <ProfBar label="Performance" value={65} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Detailed review */}
-        <div className="mt-10">
-          <h2 className="text-lg font-bold text-slate-900 mb-1">Detailed Review</h2>
-          <p className="text-sm text-slate-500 mb-6">Review your answers and understand the rationale behind the correct solutions.</p>
+          {/* Detailed review */}
+          <div className="mt-10">
+            <h2 className="text-lg font-bold text-foreground mb-1">Detailed Review</h2>
+            <p className="text-sm text-muted-foreground mb-6">Review your answers and understand the rationale behind the correct solutions.</p>
 
-          <div className="space-y-4">
-            {result.details.map((detail, idx) => (
-              <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
-            ))}
+            <div className="space-y-4">
+              {result.details.map((detail, idx) => (
+                <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Bottom actions */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10">
-          <button
-            onClick={() => { setIsSubmitted(false); setAnswers([]); setCurrentQuestionIndex(0); setTimer(45 * 60); }}
-            className="h-10 px-6 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-sm"
-          >
-            <RotateCcw className="w-3.5 h-3.5" /> Retake
-          </button>
-          <button
-            onClick={() => navigate("/jobs")}
-            className="h-10 px-8 border-none rounded-xl bg-blue-600 text-sm font-bold text-white cursor-pointer hover:bg-blue-700 transition-all shadow-md shadow-blue-200"
-          >
-            Back to Jobs
-          </button>
+          {/* Bottom actions */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10">
+            <button
+              onClick={() => { setIsSubmitted(false); setAnswers([]); setCurrentQuestionIndex(0); setTimer(45 * 60); }}
+              className="h-10 px-6 border border-border rounded-xl bg-card text-sm font-bold text-foreground cursor-pointer hover:bg-muted transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Retake
+            </button>
+            <button
+              onClick={() => navigate("/jobs")}
+              className="h-10 px-8 border-none rounded-xl bg-primary text-sm font-bold text-primary-foreground cursor-pointer hover:bg-primary/90 transition-all shadow-md"
+            >
+              Back to Jobs
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -332,26 +334,26 @@ const InterviewPage: React.FC = () => {
   const timerWarning = timer < 5 * 60;
 
   return (
-    <div className="bg-slate-50 min-h-screen font-sans">
+    <div className="bg-background min-h-screen font-sans">
       <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-24">
 
         {/* Top bar: breadcrumb + flag + timer */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <span className="text-sm text-slate-500 font-medium">
-            Technical Assessment <span className="mx-1 text-slate-300">/</span>
-            <span className="text-slate-900 font-bold">React Core</span>
+          <span className="text-sm text-muted-foreground font-medium">
+            Technical Assessment <span className="mx-1 text-border">/</span>
+            <span className="text-foreground font-bold">React Core</span>
           </span>
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => setFlagged((f) => !f)}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-4 border rounded-xl text-xs font-bold transition-all shadow-sm
-                ${flagged ? "bg-amber-50 border-amber-200 text-amber-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}
+                ${flagged ? "bg-amber-500/10 border-amber-500/30 text-amber-500" : "bg-card border-border text-muted-foreground hover:bg-muted"}`}
             >
               <Flag className="w-3.5 h-3.5" />
               {flagged ? "Flagged" : "Flag"}
             </button>
             <div className={`flex items-center gap-2 h-9 px-4 border rounded-xl text-sm font-bold shadow-sm
-              ${timerWarning ? "bg-red-50 border-red-200 text-red-600 animate-pulse" : "bg-white border-slate-200 text-slate-700"}`}>
+              ${timerWarning ? "bg-red-500/10 border-red-500/30 text-red-500 animate-pulse" : "bg-card border-border text-foreground"}`}>
               <Clock className="w-3.5 h-3.5" />
               {formatTime(timer)}
             </div>
@@ -360,18 +362,18 @@ const InterviewPage: React.FC = () => {
 
         {/* Progress */}
         <div className="mb-8">
-          <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">
-            <span className="text-blue-600">Question {currentQuestionIndex + 1} of {questions.length}</span>
+          <div className="flex justify-between text-xs font-bold text-muted-foreground mb-2 uppercase tracking-widest">
+            <span className="text-primary">Question {currentQuestionIndex + 1} of {questions.length}</span>
             <span>{Math.round(progress)}% Done</span>
           </div>
-          <div className="h-2 rounded-full bg-slate-200 overflow-hidden shadow-inner">
-            <div className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div className="h-2 rounded-full bg-muted overflow-hidden shadow-inner">
+            <div className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
         {/* Question card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-sm mb-6">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight mb-10 tracking-tight">
+        <div className="bg-card border border-border rounded-2xl p-6 sm:p-10 shadow-sm mb-6">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-foreground leading-tight mb-10 tracking-tight">
             {currentQuestion.question}
           </h2>
 
@@ -384,14 +386,14 @@ const InterviewPage: React.FC = () => {
                   key={option.id}
                   onClick={() => handleSelectOption(option.id)}
                   className={`flex items-center gap-4 p-4 sm:p-5 border-2 rounded-2xl cursor-pointer transition-all duration-200 group
-                    ${selected ? "border-blue-600 bg-blue-50/50 shadow-md shadow-blue-100/50" : "border-slate-100 hover:border-slate-200 bg-white"}`}
+                    ${selected ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/40 bg-card hover:bg-muted/50"}`}
                 >
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all
-                    ${selected ? "border-blue-600 bg-blue-600" : "border-slate-300 group-hover:border-slate-400 bg-white"}`}>
-                    {selected && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
+                    ${selected ? "border-primary bg-primary" : "border-muted-foreground/40 group-hover:border-primary/60 bg-background"}`}>
+                    {selected && <div className="w-2 h-2 rounded-full bg-primary-foreground shadow-sm" />}
                   </div>
                   <span className={`text-sm sm:text-base font-semibold leading-relaxed transition-colors
-                    ${selected ? "text-blue-900" : "text-slate-600 group-hover:text-slate-900"}`}>
+                    ${selected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>
                     {option.optionText}
                   </span>
                 </label>
@@ -405,7 +407,7 @@ const InterviewPage: React.FC = () => {
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0 || submitInterview.isPending}
-            className="flex items-center gap-2 h-11 px-5 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center gap-2 h-11 px-5 border border-border rounded-xl bg-card text-sm font-bold text-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-colors shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" /> Previous
           </button>
@@ -413,8 +415,8 @@ const InterviewPage: React.FC = () => {
           <button
             onClick={handleNext}
             disabled={!hasSelected || submitInterview.isPending}
-            className={`flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-white transition-all shadow-md
-              ${!hasSelected || submitInterview.isPending ? "bg-slate-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-blue-200"}`}
+            className={`flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold transition-all shadow-md
+              ${!hasSelected || submitInterview.isPending ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95"}`}
           >
             {submitInterview.isPending ? "Submitting..." : isLastQuestion ? "Submit Interview" : "Next Question"}
             {!isLastQuestion && <ArrowRight className="w-4 h-4" />}
