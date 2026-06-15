@@ -10,22 +10,20 @@ import {
   Flag,
   Clock,
   RotateCcw,
-  Target,
-  Zap,
   BookOpen,
   ChevronDown,
   ChevronUp,
   Award,
-  Sparkles,
 } from "lucide-react";
 import type { InterviewAnswer } from "@/features/interview/types/interview";
 
 /* ─── Circular score ring ─── */
-const ScoreRing: React.FC<{ score: number; label: string }> = ({ score }) => {
+const ScoreRing: React.FC<{ score: number }> = ({ score }) => {
+  const pct = Math.min(score, 100);
   const r = 52;
   const circ = 2 * Math.PI * r;
-  const filled = (score / 100) * circ;
-  const color = score >= 80 ? "#2563eb" : score >= 60 ? "#f59e0b" : "#ef4444";
+  const filled = (pct / 100) * circ;
+  const color = pct >= 80 ? "#22c55e" : pct >= 60 ? "#f59e0b" : "#ef4444";
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-[130px] h-[130px]">
@@ -36,27 +34,13 @@ const ScoreRing: React.FC<{ score: number; label: string }> = ({ score }) => {
             className="transition-[stroke-dasharray] duration-1000 ease-out" />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-foreground leading-none">{score}</span>
-          <span className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-wider">OF 100</span>
-          <span className="text-[9px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full mt-1.5 border border-primary/20 uppercase">Top 10%</span>
+          <span className="text-3xl font-black text-foreground leading-none">{pct}%</span>
+          <span className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-wider">Score</span>
         </div>
       </div>
     </div>
   );
 };
-
-/* ─── Proficiency bar ─── */
-const ProfBar: React.FC<{ label: string; value: number }> = ({ label, value }) => (
-  <div className="mb-2.5">
-    <div className="flex justify-between mb-1">
-      <span className="text-[12px] text-muted-foreground font-medium">{label}</span>
-      <span className="text-[12px] font-bold text-foreground">{value}%</span>
-    </div>
-    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-      <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: `${value}%` }} />
-    </div>
-  </div>
-);
 
 /* ─── Expandable review card ─── */
 const ReviewCard: React.FC<{
@@ -102,7 +86,7 @@ const ReviewCard: React.FC<{
             <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-2 mb-2">
                 <BookOpen className="w-3.5 h-3.5 text-primary" />
-                <span className="text-xs font-bold text-foreground">Expert Explanation</span>
+                <span className="text-xs font-bold text-foreground">Explanation</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">{detail.explanation}</p>
             </div>
@@ -124,7 +108,7 @@ const InterviewPage: React.FC = () => {
   const [answers, setAnswers] = useState<InterviewAnswer[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [flagged, setFlagged] = useState(false);
-  const [timer, setTimer] = useState(45 * 60); // 45 minutes in seconds
+  const [timer, setTimer] = useState(45 * 60);
 
   useEffect(() => {
     if (isSubmitted) return;
@@ -177,25 +161,23 @@ const InterviewPage: React.FC = () => {
   /* ── Results view ── */
   if (isSubmitted && submitInterview.data) {
     const result = submitInterview.data;
-    const percentage = Math.round((result.score / result.totalQuestions) * 100);
+    const percentage = result.totalQuestions > 0
+      ? Math.round((result.correctAnswers / result.totalQuestions) * 100)
+      : 0;
     const status = percentage >= 80 ? "EXCELLENT" : percentage >= 60 ? "GOOD" : "NEEDS IMPROVEMENT";
     const statusColor = percentage >= 80 ? "text-emerald-500" : percentage >= 60 ? "text-amber-500" : "text-red-500";
     const completionMins = Math.floor((45 * 60 - timer) / 60);
     const completionSecs = (45 * 60 - timer) % 60;
 
-    const strengths = ["React Hooks", "State Management", "Component Lifecycle", "Accessibility (a11y)"];
-    const growthAreas = ["Performance Optimization", "Webpack Config"];
-
     return (
       <div className="bg-background min-h-screen font-sans">
-        <div className="max-w-[860px] mx-auto p-4 sm:p-8 pb-16">
-          {/* Results header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+        <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-16">
+
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight leading-tight m-0">Interview Results</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {result.totalQuestions > 0 ? "Alex" : "Candidate"} · Senior Frontend Developer Assessment
-              </p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight leading-tight">Interview Results</h1>
+              <p className="text-sm text-muted-foreground mt-1">Technical Assessment</p>
             </div>
             <div className="flex flex-col items-start sm:items-end gap-1">
               <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">OVERALL STATUS</span>
@@ -208,61 +190,30 @@ const InterviewPage: React.FC = () => {
 
           {/* Score card */}
           <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm mb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-8 items-start">
+            <div className="flex flex-col sm:flex-row items-center gap-8">
               {/* Score ring */}
-              <div className="flex justify-center">
-                <ScoreRing score={percentage} label="Score" />
+              <div className="shrink-0">
+                <ScoreRing score={percentage} />
               </div>
 
-              {/* Strengths */}
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Target className="w-4 h-4 text-emerald-500" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Strengths</span>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {strengths.map((s) => (
-                    <span key={s} className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-500">{s}</span>
-                  ))}
-                </div>
-                <div className="space-y-2 pt-4 border-t border-border">
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Correctness</span>
-                    <span className="font-bold text-foreground">{result.correctAnswers} / {result.totalQuestions}</span>
+              {/* Stats */}
+              <div className="flex-1 w-full space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-black text-foreground">{result.correctAnswers}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Correct</p>
                   </div>
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Completion Time</span>
-                    <span className="font-bold text-foreground">{completionMins}m {String(completionSecs).padStart(2, "0")}s</span>
+                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-black text-foreground">{result.totalQuestions}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Total Questions</p>
                   </div>
-                </div>
-              </div>
-
-              {/* Growth + Market Readiness */}
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Zap className="w-4 h-4 text-amber-500" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Growth Areas</span>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {growthAreas.map((g) => (
-                    <span key={g} className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] font-semibold text-amber-500">{g}</span>
-                  ))}
-                </div>
-
-                {/* Market readiness */}
-                <div className="pt-4 border-t border-border">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-xs font-bold text-foreground">Market Readiness</span>
+                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-black text-foreground">{result.totalQuestions - result.correctAnswers}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Incorrect</p>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                    Based on your score of {percentage}%, you demonstrate a strong command of core React principles.
-                  </p>
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">TECHNICAL PROFICIENCY</span>
-                    <ProfBar label="Core React" value={95} />
-                    <ProfBar label="Architecture" value={80} />
-                    <ProfBar label="Performance" value={65} />
+                  <div className="bg-muted/50 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-black text-foreground">{completionMins}m {String(completionSecs).padStart(2, "0")}s</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Time Taken</p>
                   </div>
                 </div>
               </div>
@@ -270,10 +221,9 @@ const InterviewPage: React.FC = () => {
           </div>
 
           {/* Detailed review */}
-          <div className="mt-10">
+          <div className="mt-8">
             <h2 className="text-lg font-bold text-foreground mb-1">Detailed Review</h2>
-            <p className="text-sm text-muted-foreground mb-6">Review your answers and understand the rationale behind the correct solutions.</p>
-
+            <p className="text-sm text-muted-foreground mb-5">Review your answers and understand the correct solutions.</p>
             <div className="space-y-4">
               {result.details.map((detail, idx) => (
                 <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
@@ -291,7 +241,7 @@ const InterviewPage: React.FC = () => {
             </button>
             <button
               onClick={() => navigate("/jobs")}
-              className="h-10 px-8 border-none rounded-xl bg-primary text-sm font-bold text-primary-foreground cursor-pointer hover:bg-primary/90 transition-all shadow-md"
+              className="h-10 px-8 rounded-xl bg-primary text-sm font-bold text-primary-foreground cursor-pointer hover:bg-primary/90 transition-all shadow-md"
             >
               Back to Jobs
             </button>
@@ -330,7 +280,6 @@ const InterviewPage: React.FC = () => {
   };
 
   const handlePrevious = () => setCurrentQuestionIndex((p) => Math.max(0, p - 1));
-
   const timerWarning = timer < 5 * 60;
 
   return (
