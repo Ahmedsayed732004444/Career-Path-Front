@@ -133,7 +133,7 @@ class JobService {
    * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/accept
    */
   async acceptApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
-    await apiClient.put(`/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/accept`);
+    await apiClient.put(`/JobSubmissions/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/accept`);
   }
 
   /**
@@ -141,7 +141,7 @@ class JobService {
    * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/reject
    */
   async rejectApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
-    await apiClient.put(`/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/reject`);
+    await apiClient.put(`/JobSubmissions/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/reject`);
   }
 
 }
