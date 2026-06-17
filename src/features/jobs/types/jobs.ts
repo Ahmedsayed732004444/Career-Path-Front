@@ -1,5 +1,14 @@
 import type { PaginatedResponse } from "@/shared/types/pagination";
 
+export const SubmissionStatus = {
+  Pending: 0,
+  Accepted: 1,
+  Rejected: 2,
+} as const;
+
+export type SubmissionStatus = (typeof SubmissionStatus)[keyof typeof SubmissionStatus];
+
+
 export interface CompanyDetails {
   companyId: string;
   name: string | null;
@@ -39,6 +48,7 @@ export interface ApplicantResponse {
   applicantName: string;
   applicantEmail: string;
   applicantImageUrl: string | null;
+  status: SubmissionStatus;
 }
 
 

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
+import { SubmissionStatus } from "@/features/jobs/types/jobs";
 
 const getFullUrl = (path: string | null | undefined, apiBase: string) => {
   if (!path) return "";
@@ -279,9 +280,23 @@ const JobApplicantsPage: React.FC = () => {
                           <Calendar className="w-4 h-4 text-muted-foreground/45" />
                           <span className="uppercase tracking-wider">Applied {formatDate(applicant.appliedAt)}</span>
                         </div>
-                        <span className="text-[10px] font-black px-3 py-1.5 rounded-xl bg-primary/5 text-primary uppercase tracking-widest border border-primary/10">
-                          {getDaysAgo(applicant.appliedAt)}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {/* Status badge */}
+                          <span className={cn(
+                            "text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border",
+                            applicant.status === SubmissionStatus.Accepted
+                              ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                              : applicant.status === SubmissionStatus.Rejected
+                              ? "bg-destructive/10 text-destructive border-destructive/20"
+                              : "bg-primary/5 text-primary border-primary/10"
+                          )}>
+                            {applicant.status === SubmissionStatus.Accepted
+                              ? "✓ Accepted"
+                              : applicant.status === SubmissionStatus.Rejected
+                              ? "✗ Rejected"
+                              : getDaysAgo(applicant.appliedAt)}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="flex-1 mb-8">
@@ -298,42 +313,54 @@ const JobApplicantsPage: React.FC = () => {
                       </div>
 
                       <div className="flex flex-col gap-3 mt-auto pt-2">
-                        {/* Accept / Reject actions */}
-                        <div className="flex gap-3">
-                          <Button
-                            size="lg"
-                            className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
-                            disabled={acceptMutation.isPending || rejectMutation.isPending}
-                            onClick={() =>
-                              companyId && jobId &&
-                              acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
-                            }
-                          >
-                            {acceptMutation.isPending ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <CheckCircle className="w-4 h-4" />
-                            )}
-                            Accept
-                          </Button>
-                          <Button
-                            size="lg"
-                            variant="destructive"
-                            className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
-                            disabled={acceptMutation.isPending || rejectMutation.isPending}
-                            onClick={() =>
-                              companyId && jobId &&
-                              rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
-                            }
-                          >
-                            {rejectMutation.isPending ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <XCircle className="w-4 h-4" />
-                            )}
-                            Reject
-                          </Button>
-                        </div>
+                        {/* Accept / Reject actions — hidden when already decided */}
+                        {applicant.status === SubmissionStatus.Pending && (
+                          <div className="flex gap-3">
+                            <Button
+                              size="lg"
+                              className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
+                              disabled={acceptMutation.isPending || rejectMutation.isPending}
+                              onClick={() =>
+                                companyId && jobId &&
+                                acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                              }
+                            >
+                              {acceptMutation.isPending ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <CheckCircle className="w-4 h-4" />
+                              )}
+                              Accept
+                            </Button>
+                            <Button
+                              size="lg"
+                              variant="destructive"
+                              className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
+                              disabled={acceptMutation.isPending || rejectMutation.isPending}
+                              onClick={() =>
+                                companyId && jobId &&
+                                rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                              }
+                            >
+                              {rejectMutation.isPending ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <XCircle className="w-4 h-4" />
+                              )}
+                              Reject
+                            </Button>
+                          </div>
+                        )}
+                        {applicant.status === SubmissionStatus.Accepted && (
+                          <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-black">
+                            <CheckCircle className="w-4 h-4" /> Application Accepted
+                          </div>
+                        )}
+                        {applicant.status === SubmissionStatus.Rejected && (
+                          <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-black">
+                            <XCircle className="w-4 h-4" /> Application Rejected
+                          </div>
+                        )}
                         {/* CV download */}
                         <Button
                           size="lg"
