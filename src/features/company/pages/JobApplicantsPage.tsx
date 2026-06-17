@@ -33,6 +33,19 @@ function getDaysAgo(d: string) {
   return days === 0 ? "Today" : days === 1 ? "Yesterday" : `${days} days ago`;
 }
 
+/** Normalize status from backend (string OR number OR undefined) → numeric SubmissionStatus */
+function normalizeStatus(status: unknown): number {
+  if (status === null || status === undefined) return SubmissionStatus.Pending;
+  if (typeof status === "number") return status;
+  const map: Record<string, number> = {
+    Pending: SubmissionStatus.Pending,
+    Accepted: SubmissionStatus.Accepted,
+    Rejected: SubmissionStatus.Rejected,
+  };
+  return map[status as string] ?? SubmissionStatus.Pending;
+}
+
+
 const ApplicantSkeleton = () => (
   <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-6">
     <div className="flex items-start gap-4">
@@ -284,15 +297,15 @@ const JobApplicantsPage: React.FC = () => {
                           {/* Status badge */}
                           <span className={cn(
                             "text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border",
-                            applicant.status === SubmissionStatus.Accepted
+                            normalizeStatus(applicant.status) === SubmissionStatus.Accepted
                               ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                              : applicant.status === SubmissionStatus.Rejected
+                              : normalizeStatus(applicant.status) === SubmissionStatus.Rejected
                               ? "bg-destructive/10 text-destructive border-destructive/20"
                               : "bg-primary/5 text-primary border-primary/10"
                           )}>
-                            {applicant.status === SubmissionStatus.Accepted
+                            {normalizeStatus(applicant.status) === SubmissionStatus.Accepted
                               ? "✓ Accepted"
-                              : applicant.status === SubmissionStatus.Rejected
+                              : normalizeStatus(applicant.status) === SubmissionStatus.Rejected
                               ? "✗ Rejected"
                               : getDaysAgo(applicant.appliedAt)}
                           </span>
@@ -314,7 +327,7 @@ const JobApplicantsPage: React.FC = () => {
 
                       <div className="flex flex-col gap-3 mt-auto pt-2">
                         {/* Accept / Reject actions — hidden when already decided */}
-                        {applicant.status === SubmissionStatus.Pending && (
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Pending && (
                           <div className="flex gap-3">
                             <Button
                               size="lg"
@@ -351,12 +364,12 @@ const JobApplicantsPage: React.FC = () => {
                             </Button>
                           </div>
                         )}
-                        {applicant.status === SubmissionStatus.Accepted && (
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Accepted && (
                           <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-black">
                             <CheckCircle className="w-4 h-4" /> Application Accepted
                           </div>
                         )}
-                        {applicant.status === SubmissionStatus.Rejected && (
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Rejected && (
                           <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-black">
                             <XCircle className="w-4 h-4" /> Application Rejected
                           </div>
