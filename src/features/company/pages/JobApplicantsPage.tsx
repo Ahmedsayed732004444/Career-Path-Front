@@ -327,43 +327,50 @@ const JobApplicantsPage: React.FC = () => {
 
                       <div className="flex flex-col gap-3 mt-auto pt-2">
                         {/* Accept / Reject actions — hidden when already decided */}
-                        {normalizeStatus(applicant.status) === SubmissionStatus.Pending && (
-                          <div className="flex gap-3">
-                            <Button
-                              size="lg"
-                              className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
-                              disabled={acceptMutation.isPending || rejectMutation.isPending}
-                              onClick={() =>
-                                companyId && jobId &&
-                                acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
-                              }
-                            >
-                              {acceptMutation.isPending ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <CheckCircle className="w-4 h-4" />
-                              )}
-                              Accept
-                            </Button>
-                            <Button
-                              size="lg"
-                              variant="destructive"
-                              className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
-                              disabled={acceptMutation.isPending || rejectMutation.isPending}
-                              onClick={() =>
-                                companyId && jobId &&
-                                rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
-                              }
-                            >
-                              {rejectMutation.isPending ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <XCircle className="w-4 h-4" />
-                              )}
-                              Reject
-                            </Button>
-                          </div>
-                        )}
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Pending && (() => {
+                          // Track loading per-card using mutation.variables
+                          const isAccepting = acceptMutation.isPending && acceptMutation.variables?.submissionId === applicant.id;
+                          const isRejecting = rejectMutation.isPending && rejectMutation.variables?.submissionId === applicant.id;
+                          const isBusy = isAccepting || isRejecting;
+                          return (
+                            <div className="flex gap-3">
+                              <Button
+                                size="lg"
+                                className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
+                                disabled={isBusy}
+                                onClick={() =>
+                                  companyId && jobId &&
+                                  acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                                }
+                              >
+                                {isAccepting ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="w-4 h-4" />
+                                )}
+                                Accept
+                              </Button>
+                              <Button
+                                size="lg"
+                                variant="destructive"
+                                className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
+                                disabled={isBusy}
+                                onClick={() =>
+                                  companyId && jobId &&
+                                  rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                                }
+                              >
+                                {isRejecting ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <XCircle className="w-4 h-4" />
+                                )}
+                                Reject
+                              </Button>
+                            </div>
+                          );
+                        })()}
+
                         {normalizeStatus(applicant.status) === SubmissionStatus.Accepted && (
                           <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-black">
                             <CheckCircle className="w-4 h-4" /> Application Accepted
