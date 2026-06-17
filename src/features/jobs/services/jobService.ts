@@ -128,6 +128,21 @@ class JobService {
     return response.value !== undefined ? response.value : response;
   }
 
+  /**
+   * Accept an applicant
+   * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/accept
+   */
+  async acceptApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
+    await apiClient.put(`/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/accept`);
+  }
+
+  /**
+   * Reject an applicant
+   * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/reject
+   */
+  async rejectApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
+    await apiClient.put(`/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/reject`);
+  }
 
 }
 

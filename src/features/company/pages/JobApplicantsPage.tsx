@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePermissions } from "@/features/auth/hooks/usePermissions";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useGetJobApplicants } from "@/features/jobs/hooks/useJobs";
+import { useGetJobApplicants, useAcceptApplicant, useRejectApplicant } from "@/features/jobs/hooks/useJobs";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import {
   Mail, Phone, Calendar, Download,
   Search, Users, AlertCircle, ChevronLeft, ChevronRight,
-  FileText, MoreHorizontal,
+  FileText, MoreHorizontal, CheckCircle, XCircle, Loader2,
 } from "lucide-react";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,9 @@ const ApplicantSkeleton = () => (
 const JobApplicantsPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
-  const { isCompany } = usePermissions();
+  const { isCompany, companyId } = usePermissions();
+  const acceptMutation = useAcceptApplicant();
+  const rejectMutation = useRejectApplicant();
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 400);
   const [pageNumber, setPageNumber] = useState(1);
@@ -295,23 +297,51 @@ const JobApplicantsPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex gap-4 mt-auto pt-2">
+                      <div className="flex flex-col gap-3 mt-auto pt-2">
+                        {/* Accept / Reject actions */}
+                        <div className="flex gap-3">
+                          <Button
+                            size="lg"
+                            className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
+                            disabled={acceptMutation.isPending || rejectMutation.isPending}
+                            onClick={() =>
+                              companyId && jobId &&
+                              acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                            }
+                          >
+                            {acceptMutation.isPending ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <CheckCircle className="w-4 h-4" />
+                            )}
+                            Accept
+                          </Button>
+                          <Button
+                            size="lg"
+                            variant="destructive"
+                            className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
+                            disabled={acceptMutation.isPending || rejectMutation.isPending}
+                            onClick={() =>
+                              companyId && jobId &&
+                              rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                            }
+                          >
+                            {rejectMutation.isPending ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <XCircle className="w-4 h-4" />
+                            )}
+                            Reject
+                          </Button>
+                        </div>
+                        {/* CV download */}
                         <Button
                           size="lg"
-                          className="flex-1 h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-black gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all"
+                          className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-black gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all"
                           onClick={() => cvUrl && window.open(cvUrl, "_blank")}
                           disabled={!cvUrl}
                         >
-                          <Download className="w-5 h-5" /> CV
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className="flex-1 h-14 rounded-2xl border-border text-foreground text-sm font-black gap-2 hover:bg-accent hover:border-border active:scale-[0.98] transition-all"
-                          onClick={() => cvUrl && window.open(cvUrl, "_blank")}
-                          disabled={!cvUrl}
-                        >
-                          <FileText className="w-5 h-5" /> View
+                          <Download className="w-4 h-4" /> Download CV
                         </Button>
                       </div>
                     </div>

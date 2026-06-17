@@ -145,4 +145,42 @@ export const useAddJob = () => {
   });
 };
 
+/**
+ * Hook for accepting an applicant
+ */
+export const useAcceptApplicant = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: ({ companyId, jobId, submissionId }: { companyId: string; jobId: string; submissionId: string }) =>
+      jobService.acceptApplicant(companyId, jobId, submissionId),
+    onSuccess: () => {
+      toast.success("Applicant accepted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobApplicants"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+/**
+ * Hook for rejecting an applicant
+ */
+export const useRejectApplicant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, jobId, submissionId }: { companyId: string; jobId: string; submissionId: string }) =>
+      jobService.rejectApplicant(companyId, jobId, submissionId),
+    onSuccess: () => {
+      toast.success("Applicant rejected.");
+      queryClient.invalidateQueries({ queryKey: ["jobApplicants"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
