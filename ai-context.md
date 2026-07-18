@@ -46,6 +46,7 @@ src/app/App.tsx
 src/app/main.tsx
 src/app/routes/index.tsx
 src/assets/imgs/auth/laptop-for-register.webp
+src/assets/imgs/auth/Use_the_uploaded_image_as_the_ONLY_character_and_facial_reference.____IMPORTANT___One_woman_only.__N_seed4158426707.mp4
 src/assets/imgs/auth/vertical-for-vrfiy.webp
 src/features/admin/components/RoleDialog.tsx
 src/features/admin/components/RoleManagement.tsx
@@ -155,10 +156,12 @@ src/features/posts/services/postService.ts
 src/features/posts/types/comment.ts
 src/features/posts/types/post.ts
 src/features/profile/components/BasicInfoForm.tsx
+src/features/profile/components/ChangePasswordForm.tsx
 src/features/profile/components/CvSection.tsx
 src/features/profile/components/ProfilePhotoSection.tsx
 src/features/profile/hooks/useProfile.ts
 src/features/profile/hooks/userHooks.ts
+src/features/profile/pages/ChangePasswordPage.tsx
 src/features/profile/pages/EditProfilePage.tsx
 src/features/profile/pages/ProfilePage.tsx
 src/features/profile/services/profileService.ts
@@ -724,6 +727,7 @@ import ConfirmEmailPage from "@/features/auth/pages/ConfirmEmailPage";
 import OAuthCallbackPage from "@/features/auth/pages/OAuthCallbackPage";
 import ProfilePage from "@/features/profile/pages/ProfilePage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
+import ChangePasswordPage from "@/features/profile/pages/ChangePasswordPage";
 import JobsListPage from "@/features/jobs/pages/JobsListPage";
 import JobDetailsPage from "@/features/jobs/pages/JobDetailsPage";
 import JobTrackerPage from "@/features/job-tracker/pages/JobTrackerPage";
@@ -764,6 +768,7 @@ const MainRouter = () => {
             <Route path="/profile/:userId/following" element={<FollowingPage />} />
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/edit-profile" element={<EditProfilePage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/jobs" element={<JobsListPage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
             <Route path="/interview/:jobId" element={<InterviewPage />} />
@@ -2619,8 +2624,8 @@ export const CvAnalysisTab: React.FC<CvAnalysisTabProps> = ({ hasResume: _hasRes
     setChecklistItems((prev) => prev.map((item) => item.id === id ? { ...item, checked: !item.checked } : item));
   };
 
-  const cardClassName = "bg-white border border-gray-200 rounded-xl p-5 sm:p-6 shadow-sm";
-  const sectionTitleClassName = "text-[14.5px] font-bold text-slate-900 mb-3.5";
+  const cardClassName = "bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm";
+  const sectionTitleClassName = "text-[14.5px] font-bold text-foreground mb-3.5";
 
   return (
     <div className="flex flex-col gap-5">
@@ -3544,7 +3549,7 @@ import { Link } from "react-router-dom";
 import { Users, Quote } from "lucide-react";
 import verify from "@/assets/imgs/auth/vertical-for-vrfiy.webp";
 import laptop from "@/assets/imgs/auth/laptop-for-register.webp";
-import authScreenshot from "@/assets/imgs/auth/team-business-people-stacking-hands.jpg";
+import authVideo from "@/assets/imgs/auth/Use_the_uploaded_image_as_the_ONLY_character_and_facial_reference.____IMPORTANT___One_woman_only.__N_seed4158426707.mp4";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -3561,17 +3566,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
   leftContent,
 }) => {
   const defaultLeftContent = (
-    <div className="relative h-full flex flex-col justify-between p-8 lg:p-12">
-      {/* Logo */}
-      <Link to="/" className="flex items-center gap-2 z-10">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
-          <Users className="h-6 w-6 text-white" />
-        </div>
-        <span className="text-2xl font-bold text-white">Career Path</span>
-      </Link>
-
+    <div className="relative h-full flex flex-col justify-between p-8 lg:p-12 pt-4">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6 z-10">
+      <div className="flex-1 flex flex-col justify-end items-center text-center space-y-6 z-10 pb-8 lg:pb-16">
         {variant === "register" && (
           <>
 
@@ -3666,24 +3663,42 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
     </div>
   );
 
+  const navbarHeader = (
+    <div className="h-20 flex items-center px-8 lg:px-12 border-b border-white/5 bg-black/40 backdrop-blur-md z-20 shrink-0">
+      <Link to="/" className="flex items-center gap-2">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+          <Users className="h-6 w-6 text-white" />
+        </div>
+        <span className="text-2xl font-bold text-white">Career Path</span>
+      </Link>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Promotional */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-black">
-        {/* Background Image */}
-        <img
-          src={authScreenshot}
-          alt="Career Path Auth"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+      <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden bg-black">
+        {navbarHeader}
         
-        {/* Subtle Overlays for Readability */}
-        <div className="absolute inset-0 bg-black/10 z-0" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 z-0" />
-        
-        {/* Content on top of image */}
-        <div className="relative z-10 w-full h-full">
-          {leftContent || defaultLeftContent}
+        <div className="flex-1 relative overflow-hidden">
+          {/* Background Video */}
+          <video
+            src={authVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover object-top"
+          />
+          
+          {/* Subtle Overlays for Readability */}
+          <div className="absolute inset-0 bg-black/10 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 z-0" />
+          
+          {/* Content on top of video */}
+          <div className="relative z-10 w-full h-full">
+            {leftContent || defaultLeftContent}
+          </div>
         </div>
       </div>
 
@@ -6007,14 +6022,16 @@ export function ChatWindow({ otherUserId, otherUserName }: ChatWindowProps) {
     return user?.id || (user as any)?.userId || getUserId() || undefined;
   }, [user, token]);
 
-  // Connect to SignalR when component mounts
+  // Connect to SignalR when component mounts or token changes
   useEffect(() => {
-    signalrService.connect();
+    if (token) {
+      signalrService.connect();
+    }
 
     return () => {
       signalrService.disconnect();
     };
-  }, []);
+  }, [token]);
 
   // Mark messages as read when conversation loads
   useEffect(() => {
@@ -6984,403 +7001,6 @@ const CompanyDashboard: React.FC = () => {
 };
 
 export default CompanyDashboard;
-````
-
-## File: src/features/company/pages/JobApplicantsPage.tsx
-````typescript
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { usePermissions } from "@/features/auth/hooks/usePermissions";
-import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useGetJobApplicants } from "@/features/jobs/hooks/useJobs";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import {
-  Mail, Phone, Calendar, Download,
-  Search, Users, AlertCircle, ChevronLeft, ChevronRight,
-  FileText, MoreHorizontal,
-} from "lucide-react";
-import { env } from "@/lib/env";
-import { cn } from "@/lib/utils";
-
-const getFullUrl = (path: string | null | undefined, apiBase: string) => {
-  if (!path) return "";
-  if (path.startsWith("http") || path.startsWith("blob:")) return path;
-  const base = apiBase.replace("/api", "");
-  return `${base}/${path.replace(/\\/g, "/")}`;
-};
-
-function formatDate(d: string) {
-  if (!d) return "N/A";
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
-function getDaysAgo(d: string) {
-  if (!d) return "";
-  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86_400_000);
-  return days === 0 ? "Today" : days === 1 ? "Yesterday" : `${days} days ago`;
-}
-
-const ApplicantSkeleton = () => (
-  <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-6">
-    <div className="flex items-start gap-4">
-      <Skeleton className="w-14 h-14 rounded-2xl shrink-0" />
-      <div className="flex-1 space-y-3">
-        <Skeleton className="h-5 w-3/4 rounded-lg" />
-        <Skeleton className="h-4 w-1/2 rounded-lg" />
-      </div>
-    </div>
-    <div className="space-y-3">
-      <Skeleton className="h-20 w-full rounded-2xl" />
-    </div>
-    <div className="flex gap-3">
-      <Skeleton className="h-11 flex-1 rounded-xl" />
-      <Skeleton className="h-11 flex-1 rounded-xl" />
-    </div>
-  </div>
-);
-
-const JobApplicantsPage: React.FC = () => {
-  const { jobId } = useParams<{ jobId: string }>();
-  const navigate = useNavigate();
-  const { isCompany } = usePermissions();
-  const [searchValue, setSearchValue] = useState("");
-  const debouncedSearch = useDebounce(searchValue, 400);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(10);
-
-  useEffect(() => {
-    if (!isCompany) navigate("/");
-  }, [isCompany, navigate]);
-
-  const { data, isLoading, error } = useGetJobApplicants(jobId ?? "", {
-    searchValue: debouncedSearch,
-    pageNumber,
-    pageSize,
-  });
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    setPageNumber(1);
-  };
-
-  const applicants = data?.items ?? [];
-  const total = data?.totalCount ?? 0;
-
-  if (!isCompany) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="space-y-1.5">
-            <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-              Job Applicants
-            </h1>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                Senior Product Designer
-              </span>
-              {!isLoading && !error && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20 shadow-sm">
-                  {total} Candidates
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex-1 md:flex-none relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              </div>
-              <Input
-                placeholder="Search candidates..."
-                value={searchValue}
-                onChange={handleSearch}
-                className="pl-12 w-full md:w-72 lg:w-96 h-12 bg-card border-border shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-2xl transition-all text-base"
-              />
-              {searchValue && (
-                <button
-                  onClick={() => {
-                    setSearchValue("");
-                    setPageNumber(1);
-                  }}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <AlertCircle className="w-5 h-5" />
-                </button>
-              )}
-            </div>
-            <Button
-              variant="outline"
-              className="rounded-2xl border-border text-muted-foreground h-12 w-12 p-0 shrink-0 bg-card hover:bg-accent shadow-sm transition-all"
-            >
-              <MoreHorizontal className="w-6 h-6" />
-            </Button>
-          </div>
-        </div>
-
-        {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <ApplicantSkeleton key={i} />
-            ))}
-          </div>
-        )}
-
-        {error && (
-          <div className="flex flex-col items-center justify-center py-24 px-6 text-center bg-card rounded-[2.5rem] border border-border shadow-xl">
-            <div className="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center mb-8 animate-pulse">
-              <AlertCircle className="w-10 h-10 text-destructive" />
-            </div>
-            <h3 className="text-2xl font-black text-foreground mb-3">
-              Unable to load applicants
-            </h3>
-            <p className="text-muted-foreground mb-10 max-w-md text-lg leading-relaxed">
-              We encountered a technical issue while fetching the candidates list. Please check your connection and try again.
-            </p>
-            <Button
-              variant="default"
-              onClick={() => window.location.reload()}
-              className="rounded-2xl px-10 h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
-            >
-              Retry Connection
-            </Button>
-          </div>
-        )}
-
-        {!isLoading && !error && applicants.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 px-6 text-center bg-card rounded-[2.5rem] border border-border shadow-xl">
-            <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center mb-8">
-              <Users className="w-12 h-12 text-muted-foreground/30" />
-            </div>
-            <h3 className="text-2xl font-black text-foreground mb-3">
-              {searchValue ? "No matching candidates" : "No applications yet"}
-            </h3>
-            <p className="text-muted-foreground max-w-md text-lg leading-relaxed">
-              {searchValue
-                ? `We couldn't find any applicants matching "${searchValue}". Try using broader search terms.`
-                : "It looks like no one has applied for this position yet."}
-            </p>
-            {searchValue && (
-              <Button
-                variant="outline"
-                onClick={() => setSearchValue("")}
-                className="mt-10 rounded-2xl px-8 h-12 border-border text-muted-foreground font-bold hover:bg-accent transition-all"
-              >
-                Clear all filters
-              </Button>
-            )}
-          </div>
-        )}
-
-        {!isLoading && !error && applicants.length > 0 && (
-          <div className="space-y-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {applicants.map((applicant, idx) => {
-                const cvUrl = getFullUrl(applicant.cvPath || applicant.cVPath, env.API_BASE_URL);
-                const imgUrl = getFullUrl(applicant.applicantImageUrl, env.API_BASE_URL);
-                const initials = (applicant.applicantName ?? "?")
-                  .split(" ")
-                  .map((n: string) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase();
-
-                return (
-                  <div
-                    key={applicant.id}
-                    className="group bg-card border border-border rounded-[2rem] shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden flex flex-col"
-                    style={{ animationDelay: `${idx * 50}ms` }}
-                  >
-                    <div className="p-8 flex-1 flex flex-col">
-                      <div className="flex items-start justify-between gap-4 mb-6">
-                        <div
-                          className="flex items-center gap-4 cursor-pointer min-w-0"
-                          onClick={() => {
-                            const id = (applicant as any).applicantionId ||
-                              (applicant as any).applicantId ||
-                              (applicant as any).ApplicantId ||
-                              (applicant as any).userId ||
-                              (applicant as any).UserId ||
-                              applicant.id;
-
-                            if (id && id !== "undefined") {
-                              navigate(`/profile/${id}`);
-                            }
-                          }}
-                        >
-                          <div className="relative shrink-0">
-                            {imgUrl ? (
-                              <img
-                                src={imgUrl}
-                                alt={applicant.applicantName}
-                                className="w-16 h-16 rounded-2xl object-cover ring-4 ring-muted group-hover:ring-primary/20 transition-all duration-500"
-                              />
-                            ) : (
-                              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center ring-4 ring-muted group-hover:ring-primary/20 transition-all duration-500">
-                                <span className="text-xl font-black text-muted-foreground/50">
-                                  {initials}
-                                </span>
-                              </div>
-                            )}
-                            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-4 border-card rounded-full shadow-sm" />
-                          </div>
-
-                          <div className="min-w-0">
-                            <h3 className="font-black text-foreground text-lg leading-tight truncate group-hover:text-primary transition-colors">
-                              {applicant.applicantName}
-                            </h3>
-                            <div className="flex flex-col gap-1 mt-1.5">
-                              <span className="text-xs font-medium text-muted-foreground flex items-center gap-2 truncate">
-                                <Mail className="w-4 h-4 shrink-0 opacity-40" />
-                                <span className="truncate">{applicant.applicantEmail}</span>
-                              </span>
-                              {applicant.phone && (
-                                <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
-                                  <Phone className="w-4 h-4 shrink-0 opacity-40" />
-                                  {applicant.phone}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-muted-foreground hover:text-foreground hover:bg-accent h-10 w-10 p-0 rounded-xl shrink-0 transition-all"
-                        >
-                          <MoreHorizontal className="w-6 h-6" />
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center justify-between gap-3 mb-6 py-4 border-y border-border/50">
-                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground/60">
-                          <Calendar className="w-4 h-4 text-muted-foreground/45" />
-                          <span className="uppercase tracking-wider">Applied {formatDate(applicant.appliedAt)}</span>
-                        </div>
-                        <span className="text-[10px] font-black px-3 py-1.5 rounded-xl bg-primary/5 text-primary uppercase tracking-widest border border-primary/10">
-                          {getDaysAgo(applicant.appliedAt)}
-                        </span>
-                      </div>
-
-                      <div className="flex-1 mb-8">
-                        <h4 className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mb-3 px-1">
-                          Applicant Summary
-                        </h4>
-                        <div className="bg-muted/50 rounded-3xl p-5 border border-border/50 group-hover:bg-primary/5 transition-colors duration-500">
-                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4 italic font-medium">
-                            {applicant.notes
-                              ? `"${applicant.notes}"`
-                              : "No professional notes provided."}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4 mt-auto pt-2">
-                        <Button
-                          size="lg"
-                          className="flex-1 h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-black gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all"
-                          onClick={() => cvUrl && window.open(cvUrl, "_blank")}
-                          disabled={!cvUrl}
-                        >
-                          <Download className="w-5 h-5" /> CV
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className="flex-1 h-14 rounded-2xl border-border text-foreground text-sm font-black gap-2 hover:bg-accent hover:border-border active:scale-[0.98] transition-all"
-                          onClick={() => cvUrl && window.open(cvUrl, "_blank")}
-                          disabled={!cvUrl}
-                        >
-                          <FileText className="w-5 h-5" /> View
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {data && data.totalPages > 1 && (
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-6 pb-10">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setPageNumber((p) => p - 1)}
-                  disabled={!data.hasPreviousPage}
-                  className="w-12 h-12 rounded-2xl border-border shadow-sm hover:shadow-md transition-all disabled:opacity-30"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </Button>
-
-                <div className="flex items-center gap-2">
-                  {Array.from(
-                    { length: Math.min(data.totalPages, 5) },
-                    (_, i) => {
-                      const page = i + 1;
-                      const isCurrent = page === pageNumber;
-                      return (
-                        <Button
-                          key={page}
-                          variant={isCurrent ? "default" : "outline"}
-                          size="icon"
-                          onClick={() => setPageNumber(page)}
-                          className={cn(
-                            "w-12 h-12 rounded-2xl font-black text-sm shadow-sm transition-all duration-300",
-                            isCurrent
-                              ? "bg-primary hover:bg-primary/90 border-none scale-110 shadow-primary/20 shadow-lg text-primary-foreground"
-                              : "border-border text-muted-foreground hover:bg-accent"
-                          )}
-                        >
-                          {page}
-                        </Button>
-                      );
-                    }
-                  )}
-
-                  {data.totalPages > 5 && (
-                    <>
-                      <span className="px-2 text-muted-foreground font-black">...</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setPageNumber(data.totalPages)}
-                        className="w-12 h-12 rounded-2xl border-border text-muted-foreground font-black shadow-sm"
-                      >
-                        {data.totalPages}
-                      </Button>
-                    </>
-                  )}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setPageNumber((p) => p + 1)}
-                  disabled={!data.hasNextPage}
-                  className="w-12 h-12 rounded-2xl border-border shadow-sm hover:shadow-md transition-all disabled:opacity-30"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default JobApplicantsPage;
 ````
 
 ## File: src/features/follow/hooks/useFollow.ts
@@ -8773,7 +8393,7 @@ export const FeaturesSection = () => {
 ## File: src/features/home/components/HeroSection.tsx
 ````typescript
 import { Button } from "@/shared/components/ui/button";
-import team from "@/assets/imgs/home/hero-new.png";
+import team from "@/assets/imgs/home/hero.jpg";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { TextPlugin } from "gsap/TextPlugin";
@@ -9165,6 +8785,7 @@ export const StepCard = ({
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HeroSection, CTASection } from "@/features/home/components";
+import Footer from "@/shared/components/navigation/Footer";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -9184,6 +8805,7 @@ const Home: React.FC = () => {
         onBrowseJobs={handleBrowseJobs}
       />
       <CTASection />
+      <Footer />
     </div>
   );
 };
@@ -9245,438 +8867,6 @@ export const useSubmitInterview = () => {
     },
   });
 };
-````
-
-## File: src/features/interview/pages/InterviewPage.tsx
-````typescript
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useGetInterviewQuestions, useSubmitInterview } from "../hooks/useInterview";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import {
-  CheckCircle,
-  XCircle,
-  ArrowRight,
-  ArrowLeft,
-  Flag,
-  Clock,
-  RotateCcw,
-  Target,
-  Zap,
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  Award,
-  Sparkles,
-} from "lucide-react";
-import type { InterviewAnswer } from "@/features/interview/types/interview";
-
-/* ─── Circular score ring ─── */
-const ScoreRing: React.FC<{ score: number; label: string }> = ({ score }) => {
-  const r = 52;
-  const circ = 2 * Math.PI * r;
-  const filled = (score / 100) * circ;
-  const color = score >= 80 ? "#2563eb" : score >= 60 ? "#f59e0b" : "#ef4444";
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-[130px] h-[130px]">
-        <svg width="130" height="130" viewBox="0 0 130 130" className="-rotate-90">
-          <circle cx="65" cy="65" r={r} fill="none" stroke="#f1f5f9" strokeWidth="8" />
-          <circle cx="65" cy="65" r={r} fill="none" stroke={color} strokeWidth="8"
-            strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
-            className="transition-[stroke-dasharray] duration-1000 ease-out" />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-slate-900 leading-none">{score}</span>
-          <span className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">OF 100</span>
-          <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full mt-1.5 border border-blue-100 uppercase">Top 10%</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ─── Proficiency bar ─── */
-const ProfBar: React.FC<{ label: string; value: number }> = ({ label, value }) => (
-  <div className="mb-2.5">
-    <div className="flex justify-between mb-1">
-      <span className="text-[12px] text-slate-600 font-medium">{label}</span>
-      <span className="text-[12px] font-bold text-slate-900">{value}%</span>
-    </div>
-    <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-      <div className="h-full bg-blue-600 rounded-full transition-all duration-1000 ease-out" style={{ width: `${value}%` }} />
-    </div>
-  </div>
-);
-
-/* ─── Expandable review card ─── */
-const ReviewCard: React.FC<{
-  idx: number;
-  detail: { questionId: number; question: string; yourAnswer: string; correctAnswer: string; isCorrect: boolean; explanation?: string };
-}> = ({ idx, detail }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-all">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
-      >
-        {detail.isCorrect ? (
-          <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
-        ) : (
-          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
-        )}
-        <span className="text-sm font-semibold text-slate-900 flex-1 leading-relaxed">
-          <span className="text-slate-400 mr-2 font-medium">{idx + 1}.</span>
-          {detail.question}
-        </span>
-        {open ? (
-          <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
-        )}
-      </button>
-
-      {open && (
-        <div className="px-5 pb-5 pt-0 border-t border-slate-50 animate-in slide-in-from-top-2 duration-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-            <div className={`p-4 rounded-xl border ${detail.isCorrect ? "bg-emerald-50 border-emerald-100" : "bg-red-50 border-red-100"}`}>
-              <p className={`text-[10px] font-bold tracking-widest uppercase mb-2 ${detail.isCorrect ? "text-emerald-700" : "text-red-700"}`}>YOUR ANSWER</p>
-              <p className="text-sm text-slate-800 leading-relaxed">{detail.yourAnswer}</p>
-            </div>
-            <div className="p-4 rounded-xl border bg-emerald-50 border-emerald-100">
-              <p className="text-[10px] font-bold tracking-widest uppercase text-emerald-700 mb-2">CORRECT ANSWER</p>
-              <p className="text-sm text-slate-800 leading-relaxed">{detail.correctAnswer}</p>
-            </div>
-          </div>
-          {detail.explanation && (
-            <div className="mt-4 p-4 rounded-xl bg-blue-50/30 border border-blue-100">
-              <div className="flex items-center gap-2 mb-2">
-                <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-                <span className="text-xs font-bold text-slate-700">Expert Explanation</span>
-              </div>
-              <p className="text-sm text-slate-600 leading-relaxed">{detail.explanation}</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-/* ─── MAIN COMPONENT ─── */
-const InterviewPage: React.FC = () => {
-  const { jobId } = useParams<{ jobId: string }>();
-  const navigate = useNavigate();
-  const { data: questions, isLoading, error } = useGetInterviewQuestions(jobId || "");
-  const submitInterview = useSubmitInterview();
-
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<InterviewAnswer[]>([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [flagged, setFlagged] = useState(false);
-  const [timer, setTimer] = useState(45 * 60); // 45 minutes in seconds
-
-  useEffect(() => {
-    if (isSubmitted) return;
-    const interval = setInterval(() => setTimer((t) => Math.max(0, t - 1)), 1000);
-    return () => clearInterval(interval);
-  }, [isSubmitted]);
-
-  const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-
-  /* ── Loading ── */
-  if (isLoading) {
-    return (
-      <div className="max-w-[720px] mx-auto px-6 py-8">
-        <Skeleton className="h-2 rounded-full mb-8" />
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
-          <Skeleton className="h-7 w-3/5 mb-3" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-4/5 mb-7" />
-          {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-[60px] rounded-[10px] mb-2.5" />)}
-        </div>
-      </div>
-    );
-  }
-
-  /* ── Error ── */
-  if (error || !questions) {
-    return (
-      <div className="max-w-[720px] mx-auto px-6 py-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-10 text-center">
-          <XCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
-          <p className="text-[15px] text-slate-700 mb-4">Failed to load interview questions.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-4.5 border border-slate-200 rounded-lg bg-white cursor-pointer font-semibold text-[13.5px]">Go Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  /* ── Empty ── */
-  if (questions.length === 0) {
-    return (
-      <div className="max-w-[720px] mx-auto px-6 py-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-10 text-center">
-          <p className="text-[15px] text-slate-700 mb-4">No questions found for this interview.</p>
-          <button onClick={() => navigate(-1)} className="h-9 px-4.5 border border-slate-200 rounded-lg bg-white cursor-pointer font-semibold text-[13.5px]">Go Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  /* ── Results view ── */
-  if (isSubmitted && submitInterview.data) {
-    const result = submitInterview.data;
-    const percentage = Math.round((result.score / result.totalQuestions) * 100);
-    const status = percentage >= 80 ? "EXCELLENT" : percentage >= 60 ? "GOOD" : "NEEDS IMPROVEMENT";
-    const statusColor = percentage >= 80 ? "text-emerald-500" : percentage >= 60 ? "text-amber-500" : "text-red-500";
-    const completionMins = Math.floor((45 * 60 - timer) / 60);
-    const completionSecs = (45 * 60 - timer) % 60;
-
-    const strengths = ["React Hooks", "State Management", "Component Lifecycle", "Accessibility (a11y)"];
-    const growthAreas = ["Performance Optimization", "Webpack Config"];
-
-    return (
-      <div className="max-w-[860px] mx-auto p-4 sm:p-8 pb-16 font-sans bg-slate-50 min-h-screen">
-        {/* Results header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight m-0">Interview Results</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              {result.totalQuestions > 0 ? "Alex" : "Candidate"} · Senior Frontend Developer Assessment
-            </p>
-          </div>
-          <div className="flex flex-col items-start sm:items-end gap-1">
-            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">OVERALL STATUS</span>
-            <span className={`flex items-center gap-1.5 text-base font-extrabold ${statusColor}`}>
-              <Award className="w-4 h-4" />
-              {status}
-            </span>
-          </div>
-        </div>
-
-        {/* Score card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-[160px_1fr_1fr] gap-8 items-start">
-            {/* Score ring */}
-            <div className="flex justify-center">
-              <ScoreRing score={percentage} label="Score" />
-            </div>
-
-            {/* Strengths */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Target className="w-4 h-4 text-emerald-500" />
-                <span className="text-sm font-bold text-slate-900 uppercase tracking-wide">Strengths</span>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {strengths.map((s) => (
-                  <span key={s} className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[11px] font-semibold text-emerald-700">{s}</span>
-                ))}
-              </div>
-              <div className="space-y-2 pt-4 border-t border-slate-100">
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>Correctness</span>
-                  <span className="font-bold text-slate-900">{result.correctAnswers} / {result.totalQuestions}</span>
-                </div>
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>Completion Time</span>
-                  <span className="font-bold text-slate-900">{completionMins}m {String(completionSecs).padStart(2, "0")}s</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Growth + Market Readiness */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-4 h-4 text-amber-500" />
-                <span className="text-sm font-bold text-slate-900 uppercase tracking-wide">Growth Areas</span>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {growthAreas.map((g) => (
-                  <span key={g} className="px-2.5 py-1 rounded-full bg-amber-50 border border-amber-100 text-[11px] font-semibold text-amber-700">{g}</span>
-                ))}
-              </div>
-
-              {/* Market readiness */}
-              <div className="pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span className="text-xs font-bold text-slate-700">Market Readiness</span>
-                </div>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  Based on your score of {percentage}%, you demonstrate a strong command of core React principles.
-                </p>
-                <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">TECHNICAL PROFICIENCY</span>
-                  <ProfBar label="Core React" value={95} />
-                  <ProfBar label="Architecture" value={80} />
-                  <ProfBar label="Performance" value={65} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Detailed review */}
-        <div className="mt-10">
-          <h2 className="text-lg font-bold text-slate-900 mb-1">Detailed Review</h2>
-          <p className="text-sm text-slate-500 mb-6">Review your answers and understand the rationale behind the correct solutions.</p>
-
-          <div className="space-y-4">
-            {result.details.map((detail, idx) => (
-              <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom actions */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10">
-          <button
-            onClick={() => { setIsSubmitted(false); setAnswers([]); setCurrentQuestionIndex(0); setTimer(45 * 60); }}
-            className="h-10 px-6 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-sm"
-          >
-            <RotateCcw className="w-3.5 h-3.5" /> Retake
-          </button>
-          <button
-            onClick={() => navigate("/jobs")}
-            className="h-10 px-8 border-none rounded-xl bg-blue-600 text-sm font-bold text-white cursor-pointer hover:bg-blue-700 transition-all shadow-md shadow-blue-200"
-          >
-            Back to Jobs
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  /* ── Assessment view ── */
-  const currentQuestion = questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
-  const progress = (currentQuestionIndex / questions.length) * 100;
-  const currentAnswer = answers.find((a) => a.questionId === currentQuestion.id);
-  const hasSelected = !!currentAnswer;
-
-  const handleSelectOption = (optionId: number) => {
-    setAnswers((prev) => {
-      const existing = prev.findIndex((a) => a.questionId === currentQuestion.id);
-      if (existing >= 0) {
-        const next = [...prev];
-        next[existing] = { questionId: currentQuestion.id, selectedOptionId: optionId };
-        return next;
-      }
-      return [...prev, { questionId: currentQuestion.id, selectedOptionId: optionId }];
-    });
-  };
-
-  const handleNext = () => {
-    if (isLastQuestion) {
-      if (!jobId) return;
-      submitInterview.mutate({ jobId, request: { answers } }, { onSuccess: () => setIsSubmitted(true) });
-    } else {
-      setCurrentQuestionIndex((p) => p + 1);
-    }
-  };
-
-  const handlePrevious = () => setCurrentQuestionIndex((p) => Math.max(0, p - 1));
-
-  const timerWarning = timer < 5 * 60;
-
-  return (
-    <div className="bg-slate-50 min-h-screen font-sans">
-      <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-24">
-
-        {/* Top bar: breadcrumb + flag + timer */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <span className="text-sm text-slate-500 font-medium">
-            Technical Assessment <span className="mx-1 text-slate-300">/</span>
-            <span className="text-slate-900 font-bold">React Core</span>
-          </span>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              onClick={() => setFlagged((f) => !f)}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-4 border rounded-xl text-xs font-bold transition-all shadow-sm
-                ${flagged ? "bg-amber-50 border-amber-200 text-amber-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}
-            >
-              <Flag className="w-3.5 h-3.5" />
-              {flagged ? "Flagged" : "Flag"}
-            </button>
-            <div className={`flex items-center gap-2 h-9 px-4 border rounded-xl text-sm font-bold shadow-sm
-              ${timerWarning ? "bg-red-50 border-red-200 text-red-600 animate-pulse" : "bg-white border-slate-200 text-slate-700"}`}>
-              <Clock className="w-3.5 h-3.5" />
-              {formatTime(timer)}
-            </div>
-          </div>
-        </div>
-
-        {/* Progress */}
-        <div className="mb-8">
-          <div className="flex justify-between text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">
-            <span className="text-blue-600">Question {currentQuestionIndex + 1} of {questions.length}</span>
-            <span>{Math.round(progress)}% Done</span>
-          </div>
-          <div className="h-2 rounded-full bg-slate-200 overflow-hidden shadow-inner">
-            <div className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
-          </div>
-        </div>
-
-        {/* Question card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-sm mb-6">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight mb-10 tracking-tight">
-            {currentQuestion.question}
-          </h2>
-
-          {/* Answer options */}
-          <div className="space-y-3">
-            {currentQuestion.options.map((option) => {
-              const selected = currentAnswer?.selectedOptionId === option.id;
-              return (
-                <label
-                  key={option.id}
-                  onClick={() => handleSelectOption(option.id)}
-                  className={`flex items-center gap-4 p-4 sm:p-5 border-2 rounded-2xl cursor-pointer transition-all duration-200 group
-                    ${selected ? "border-blue-600 bg-blue-50/50 shadow-md shadow-blue-100/50" : "border-slate-100 hover:border-slate-200 bg-white"}`}
-                >
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all
-                    ${selected ? "border-blue-600 bg-blue-600" : "border-slate-300 group-hover:border-slate-400 bg-white"}`}>
-                    {selected && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
-                  </div>
-                  <span className={`text-sm sm:text-base font-semibold leading-relaxed transition-colors
-                    ${selected ? "text-blue-900" : "text-slate-600 group-hover:text-slate-900"}`}>
-                    {option.optionText}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex justify-between items-center pt-4">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0 || submitInterview.isPending}
-            className="flex items-center gap-2 h-11 px-5 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
-          >
-            <ArrowLeft className="w-4 h-4" /> Previous
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={!hasSelected || submitInterview.isPending}
-            className={`flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-white transition-all shadow-md
-              ${!hasSelected || submitInterview.isPending ? "bg-slate-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-blue-200"}`}
-          >
-            {submitInterview.isPending ? "Submitting..." : isLastQuestion ? "Submit Interview" : "Next Question"}
-            {!isLastQuestion && <ArrowRight className="w-4 h-4" />}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default InterviewPage;
 ````
 
 ## File: src/features/interview/services/interviewService.ts
@@ -9871,9 +9061,9 @@ export const useJobTrackerStats = (applications: JobApplicationResponse[] | unde
         switch (app.status) {
           case ApplicationStatus.Applied:
             return { ...acc, applied: acc.applied + 1 };
-          case ApplicationStatus.InterviewScheduled:
+          case ApplicationStatus.Interviewed:
             return { ...acc, interviews: acc.interviews + 1 };
-          case ApplicationStatus.OfferReceived:
+          case ApplicationStatus.Offered:
             return { ...acc, offers: acc.offers + 1 };
           case ApplicationStatus.Rejected:
             return { ...acc, rejected: acc.rejected + 1 };
@@ -9946,7 +9136,7 @@ const JobTrackerPage: React.FC = () => {
     defaultValues: {
       jobTitle: "",
       companyName: "",
-      applicationDate: "",
+      applicationDate: new Date().toISOString().split('T')[0],
       status: ApplicationStatus.Applied,
       applicationSource: "",
       notes: "",
@@ -10095,7 +9285,7 @@ const JobTrackerPage: React.FC = () => {
                 className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-14 px-8 gap-3 font-bold shadow-xl shadow-primary/20 w-full sm:w-auto justify-center transition-all active:scale-[0.98]"
                 onClick={() => {
                   setEditingApplication(null);
-                  reset({ jobTitle: "", companyName: "", applicationDate: "", status: ApplicationStatus.Applied, applicationSource: "", notes: "" });
+                  reset({ jobTitle: "", companyName: "", applicationDate: new Date().toISOString().split('T')[0], status: ApplicationStatus.Applied, applicationSource: "", notes: "" });
                 }}
               >
                 <Plus className="w-5 h-5" /> Add Application
@@ -10119,6 +9309,7 @@ const JobTrackerPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="applicationDate" className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Date Applied</Label>
                     <Input id="applicationDate" type="date" {...register("applicationDate")} className="h-12 rounded-xl bg-muted/50 border-none shadow-inner text-xs" />
+                    {errors.applicationDate && <p className="text-xs font-bold text-red-500 ml-1 mt-1">{errors.applicationDate.message}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="status" className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Status *</Label>
@@ -10317,10 +9508,10 @@ import { z } from "zod";
 import { ApplicationStatus } from "@/features/job-tracker/types/jobTracker";
 
 export const jobApplicationSchema = z.object({
-  jobTitle: z.string().min(1, "Job title is required").max(200, "Job title must be less than 200 characters"),
-  companyName: z.string().max(200, "Company name must be less than 200 characters").optional().or(z.literal("")),
-  applicationDate: z.string().optional().or(z.literal("")),
-  status: z.union([z.string(), z.number()]).transform((val) => Number(val)).pipe(z.nativeEnum(ApplicationStatus)),
+  jobTitle: z.string().min(1, "Job title is required").max(100, "Job title must be less than 100 characters"),
+  companyName: z.string().max(100, "Company name must be less than 100 characters").optional().or(z.literal("")),
+  applicationDate: z.string().min(1, "Application date is required"),
+  status: z.nativeEnum(ApplicationStatus),
   applicationSource: z.string().max(200, "Application source must be less than 200 characters").optional().or(z.literal("")),
   notes: z.string().max(1000, "Notes must be less than 1000 characters").optional().or(z.literal("")),
 });
@@ -10403,29 +9594,29 @@ export const jobTrackerService = new JobTrackerService();
 import type { PaginatedResponse } from "@/shared/types/pagination";
 
 export const ApplicationStatus = {
-  Applied: 0,
-  InterviewScheduled: 1,
-  OfferReceived: 2,
-  Rejected: 3,
-  Withdrawn: 4,
+  Applied: "Applied",
+  Interviewed: "Interviewed",
+  Offered: "Offered",
+  Rejected: "Rejected",
+  Accepted: "Accepted",
 } as const;
 
 export type ApplicationStatus = typeof ApplicationStatus[keyof typeof ApplicationStatus];
 
 export const ApplicationStatusLabels: Record<ApplicationStatus, string> = {
   [ApplicationStatus.Applied]: "Applied",
-  [ApplicationStatus.InterviewScheduled]: "Interview Scheduled",
-  [ApplicationStatus.OfferReceived]: "Offer Received",
+  [ApplicationStatus.Interviewed]: "Interviewed",
+  [ApplicationStatus.Offered]: "Offered",
   [ApplicationStatus.Rejected]: "Rejected",
-  [ApplicationStatus.Withdrawn]: "Withdrawn",
+  [ApplicationStatus.Accepted]: "Accepted",
 };
 
 export const ApplicationStatusColors: Record<ApplicationStatus, string> = {
   [ApplicationStatus.Applied]: "#2563eb", // blue-600
-  [ApplicationStatus.InterviewScheduled]: "#ca8a04", // yellow-600
-  [ApplicationStatus.OfferReceived]: "#16a34a", // green-600
+  [ApplicationStatus.Interviewed]: "#ca8a04", // yellow-600
+  [ApplicationStatus.Offered]: "#16a34a", // green-600
   [ApplicationStatus.Rejected]: "#dc2626", // red-600
-  [ApplicationStatus.Withdrawn]: "#4b5563", // gray-600
+  [ApplicationStatus.Accepted]: "#10b981", // emerald-500
 };
 
 export interface JobApplicationResponse {
@@ -10630,156 +9821,6 @@ export const JobApplySheet: React.FC<JobApplySheetProps> = ({
 };
 ````
 
-## File: src/features/jobs/hooks/useJobs.ts
-````typescript
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { jobService } from "@/features/jobs/services/jobService";
-import { extractErrorMessage } from "@/lib/api/errors";
-import type {
-  JobsQueryParams,
-  ApplyJobRequest,
-  AddJobRequest,
-} from "@/features/jobs/types/jobs";
-
-
-/**
- * Hook for getting all jobs
- */
-export const useGetAllJobs = (params?: JobsQueryParams) => {
-  return useQuery({
-    queryKey: ["jobs", params],
-    queryFn: ({ signal }) => jobService.getAllJobs(params, signal),
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
-};
-
-/**
- * Hook for getting job by id
- */
-export const useGetJobById = (id: string) => {
-  return useQuery({
-    queryKey: ["jobs", id],
-    queryFn: () => jobService.getJobById(id),
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-/**
- * Hook for applying to a job
- */
-export const useApplyToJob = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ jobId, request }: { jobId: string; request: ApplyJobRequest }) =>
-      jobService.applyToJob(jobId, request),
-    onSuccess: () => {
-      toast.success("Applied successfully!");
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    },
-    onError: (error) => {
-      const message = extractErrorMessage(error);
-      toast.error(message);
-    },
-  });
-};
-
-
-/**
- * Hook for updating a job
- */
-export const useUpdateJob = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ jobId, request }: { jobId: string; request: AddJobRequest }) =>
-      jobService.updateJob(jobId, request),
-    onSuccess: () => {
-      toast.success("Job updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    },
-    onError: (error) => {
-      const message = extractErrorMessage(error);
-      toast.error(message);
-    },
-  });
-};
-
-/**
- * Hook for deleting a job
- */
-export const useDeleteJob = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (jobId: string) => jobService.deleteJob(jobId),
-    onSuccess: () => {
-      toast.success("Job deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    },
-    onError: (error) => {
-      const message = extractErrorMessage(error);
-      toast.error(message);
-    },
-  });
-};
-
-/**
- * Hook for toggling job status
- */
-export const useToggleJobStatus = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ jobId }: { jobId: string }) => jobService.toggleJobStatus(jobId),
-    onSuccess: () => {
-      toast.success("Job status updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    },
-    onError: (error) => {
-      const message = extractErrorMessage(error);
-      toast.error(message);
-    },
-  });
-};
-
-
-/**
- * Hook for getting job applicants
- */
-export const useGetJobApplicants = (jobId: string, params?: JobsQueryParams) => {
-  return useQuery({
-    queryKey: ["jobApplicants", jobId, params],
-    queryFn: ({ signal }) => jobService.getJobApplicants(jobId, params, signal),
-    enabled: !!jobId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-
-/**
- * Hook for adding a job
- */
-export const useAddJob = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (request: AddJobRequest) =>
-      jobService.addJob(request),
-    onSuccess: () => {
-      toast.success("Job added successfully!");
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    },
-    onError: (error) => {
-      const message = extractErrorMessage(error);
-      toast.error(message);
-    },
-  });
-};
-````
-
 ## File: src/features/jobs/pages/JobDetailsPage.tsx
 ````typescript
 import React, { useState } from "react";
@@ -10804,6 +9845,7 @@ import {
   Edit, Trash2, Power, Eye, BrainCircuit,
   ArrowLeft, CheckCircle2, XCircle,
   AlertTriangle, Plus, X, DollarSign,
+  Briefcase,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { ApplyJobRequest, AddJobRequest } from "@/features/jobs/types/jobs";
@@ -11085,7 +10127,7 @@ const JobDetailsPage: React.FC = () => {
             )}
 
             {/* Company management */}
-            {isCompany && hasPermission("jobs:update") && (
+            {job.isMine && (
               <div className="bg-card border border-border rounded-xl p-5">
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-4">Employer Controls</h3>
                 <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2.5">
@@ -11138,7 +10180,23 @@ const JobDetailsPage: React.FC = () => {
                   : "Join our team today. Submit your application now."}
               </p>
 
-              {job.iApplied ? (
+              {job.isMine ? (
+                <div className="rounded-lg bg-primary/10 border border-primary/20 p-4 text-center">
+                  <Briefcase className="w-7 h-7 text-primary mx-auto mb-1" />
+                  <p className="text-sm font-bold text-primary">Your Job Listing</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">You are the owner of this position.</p>
+                  <div className="flex flex-col gap-2 mt-4">
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg h-10 gap-2"
+                      onClick={() => navigate(`/company/jobs/${job.id}/applicants`)}>
+                      <Eye className="w-4 h-4" /> Manage Applicants
+                    </Button>
+                    <Button variant="outline" className="w-full rounded-lg h-10 border-border text-foreground hover:bg-muted font-medium gap-2"
+                      onClick={handleEditClick}>
+                      <Edit className="w-4 h-4" /> Edit Position
+                    </Button>
+                  </div>
+                </div>
+              ) : job.iApplied ? (
                 <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-4 text-center">
                   <CheckCircle2 className="w-7 h-7 text-emerald-500 mx-auto mb-1" />
                   <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">Application Submitted</p>
@@ -11185,7 +10243,7 @@ const JobDetailsPage: React.FC = () => {
                 onClick={() => navigate(`/interview/${job.id}`)}>
                 Start Mock Interview →
               </button>
-              {isCompany && (
+              {job.isMine && (
                 <Button variant="outline" size="sm" className="w-full mt-3 rounded-lg border-border gap-2 text-xs"
                   onClick={() => genQuestions.mutate(job.id)} disabled={genQuestions.isPending}>
                   <BrainCircuit className="w-3.5 h-3.5" />
@@ -11388,7 +10446,7 @@ export default JobDetailsPage;
 
 ## File: src/features/jobs/pages/JobsListPage.tsx
 ````typescript
-import React, { useState } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useGetAllJobs } from "@/features/jobs/hooks/useJobs";
@@ -11399,7 +10457,8 @@ import {
   MapPin, Briefcase, Calendar, DollarSign, Search,
   ChevronLeft, ChevronRight,
   Clock, AlertCircle, Bookmark, CheckCircle,
-  ChevronDown, Zap, Users, Star,
+  ChevronDown, Zap, Users, Star, X, SlidersHorizontal,
+  ArrowUpDown,
 } from "lucide-react";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -11413,12 +10472,6 @@ function getPostedLabel(dateStr: string) {
   if (hours < 24) return `Posted ${hours}h ago`;
   if (days === 1) return "Posted yesterday";
   return `Posted ${days} days ago`;
-}
-
-function isDeadlineSoon(dateStr: string | null) {
-  if (!dateStr) return false;
-  const diff = new Date(dateStr).getTime() - Date.now();
-  return diff > 0 && diff < 1000 * 60 * 60 * 24 * 5;
 }
 
 function getCompanyInitial(name: string | null | undefined) {
@@ -11440,77 +10493,211 @@ function getLogoColor(name: string | null | undefined) {
   return LOGO_COLORS[key];
 }
 
-// Fake match % based on job index for visual demo (real AI match would come from API)
+// Fake match % based on job index for visual demo
 function getFakeMatch(idx: number) {
   const vals = [98, 91, 87, 94, 82, 79, 95, 88];
   return vals[idx % vals.length];
 }
 
-// ── Filter chips ──────────────────────────────────────────────────────────────
+// ── Job Type Options (based on backend JobType string field) ─────────────────
+const JOB_TYPE_OPTIONS = [
+  { value: "", label: "All Types" },
+  { value: "Full-time", label: "Full-time" },
+  { value: "Part-time", label: "Part-time" },
+  { value: "Remote", label: "Remote" },
+  { value: "Contract", label: "Contract" },
+  { value: "Internship", label: "Internship" },
+  { value: "Freelance", label: "Freelance" },
+];
 
-const FILTERS = [
-  { label: "Remote", icon: <MapPin className="w-3 h-3" /> },
-  { label: "Full-time", icon: <Clock className="w-3 h-3" /> },
-  { label: "$150k+", icon: <DollarSign className="w-3 h-3" /> },
-  { label: "Tech Stack", icon: <Briefcase className="w-3 h-3" /> },
+// ── Salary Range Options ─────────────────────────────────────────────────────
+const SALARY_OPTIONS = [
+  { value: "", label: "Any Salary" },
+  { value: "0-50", label: "Up to $50k" },
+  { value: "50-100", label: "$50k – $100k" },
+  { value: "100-150", label: "$100k – $150k" },
+  { value: "150+", label: "$150k+" },
+];
+
+// ── Sort Options ─────────────────────────────────────────────────────────────
+const SORT_OPTIONS = [
+  { value: "default", label: "Relevant", sortColumn: "", sortDirection: "" as "" },
+  { value: "newest", label: "Newest First", sortColumn: "PostedDate", sortDirection: "Desc" as const },
+  { value: "oldest", label: "Oldest First", sortColumn: "PostedDate", sortDirection: "Asc" as const },
+  { value: "salary_high", label: "Highest Salary", sortColumn: "SalaryMax", sortDirection: "Desc" as const },
+  { value: "salary_low", label: "Lowest Salary", sortColumn: "SalaryMin", sortDirection: "Asc" as const },
 ];
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 
 const JobCardSkeleton = () => (
-  <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-    <div className="flex items-start gap-4">
-      <Skeleton className="h-14 w-14 rounded-xl shrink-0" />
-      <div className="flex-1 space-y-2">
-        <Skeleton className="h-5 w-1/2" />
-        <Skeleton className="h-3 w-1/3" />
+  <div className="bg-card border border-border rounded-[2.5rem] p-2 pr-6 sm:pr-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+    <div className="p-4 sm:p-6 shrink-0">
+      <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-[1.75rem]" />
+    </div>
+    <div className="flex-1 space-y-3 p-4 sm:p-0">
+      <Skeleton className="h-6 w-1/2" />
+      <div className="flex gap-3">
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="h-4 w-24" />
       </div>
-      <Skeleton className="h-7 w-20 rounded-full" />
+      <div className="flex gap-2">
+        <Skeleton className="h-6 w-20 rounded-xl" />
+        <Skeleton className="h-6 w-24 rounded-xl" />
+      </div>
     </div>
-    <div className="flex gap-2">
-      <Skeleton className="h-6 w-20 rounded-full" />
-      <Skeleton className="h-6 w-24 rounded-full" />
-      <Skeleton className="h-6 w-20 rounded-full" />
-    </div>
-    <Skeleton className="h-4 w-full" />
-    <Skeleton className="h-4 w-3/4" />
-    <div className="flex items-center gap-3 pt-1">
-      <Skeleton className="h-9 w-28 rounded-xl" />
-      <Skeleton className="h-9 w-9 rounded-xl" />
+    <div className="flex flex-col items-center gap-3 p-6 sm:p-4 border-t sm:border-t-0 sm:border-l border-border/60 min-w-[140px]">
+      <Skeleton className="h-12 w-full rounded-xl" />
     </div>
   </div>
 );
+
+// ── Custom Dropdown (fully theme-aware, no native select) ────────────────────
+interface SelectOption { value: string; label: string; }
+
+const FilterSelect: React.FC<{
+  id: string;
+  icon: React.ReactNode;
+  value: string;
+  options: SelectOption[];
+  onChange: (v: string) => void;
+  compact?: boolean;
+}> = ({ id, icon, value, options, onChange, compact = false }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selectedLabel = options.find(o => o.value === value)?.label ?? options[0].label;
+  const isActive = value !== "" && value !== options[0].value;
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div id={id} ref={ref} className="relative">
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        className={`
+          inline-flex items-center gap-2 rounded-xl px-5 text-xs font-black
+          border transition-all duration-300 uppercase tracking-widest whitespace-nowrap
+          ${compact ? "h-12" : "h-16"}
+          ${isActive
+            ? "bg-primary text-primary-foreground border-primary shadow-xl"
+            : "bg-card text-foreground border-border shadow-sm hover:border-primary/50 hover:text-primary"
+          }`}
+      >
+        {icon}
+        {selectedLabel}
+        <ChevronDown className={`w-3 h-3 ml-1 opacity-60 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {/* Dropdown panel */}
+      {open && (
+        <div className="absolute top-full mt-2 left-0 z-50 min-w-[160px] bg-card border border-border rounded-2xl shadow-2xl shadow-black/20 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+          {options.map(o => (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => { onChange(o.value); setOpen(false); }}
+              className={`
+                w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors
+                ${o.value === value
+                  ? "bg-primary text-primary-foreground"
+                  : "text-foreground hover:bg-muted"
+                }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 const JobsListPage: React.FC = () => {
   const navigate = useNavigate();
+
+  // ── Filter state ──────────────────────────────────────────────────────────
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 400);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(10);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [jobTypeFilter, setJobTypeFilter] = useState("");
+  const [salaryFilter, setSalaryFilter] = useState("");
+  const [sortKey, setSortKey] = useState("default");
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set());
+  const [showFilters, setShowFilters] = useState(false);
 
+  // Resolve backend sort params from chosen sort option
+  const sortOption = SORT_OPTIONS.find(o => o.value === sortKey) ?? SORT_OPTIONS[0];
+
+  // ── API call ──────────────────────────────────────────────────────────────
   const { data: jobsData, isLoading, error } = useGetAllJobs({
-    searchValue: debouncedSearch,
+    searchValue: debouncedSearch || undefined,
     pageNumber,
     pageSize,
+    sortColumn: sortOption.sortColumn || undefined,
+    sortDirection: (sortOption.sortDirection as "Asc" | "Desc") || undefined,
   });
 
+  // ── Client-side filtering (JobType & Salary) on current page results ──────
+  const filteredItems = useMemo(() => {
+    let items = jobsData?.items ?? [];
+
+    // Filter by Job Type
+    if (jobTypeFilter) {
+      items = items.filter(j =>
+        j.jobType?.toLowerCase() === jobTypeFilter.toLowerCase()
+      );
+    }
+
+    // Filter by Salary range
+    if (salaryFilter) {
+      items = items.filter(j => {
+        const salary = j.salaryMax ?? j.salaryMin ?? 0;
+        const k = salary / 1000;
+        if (salaryFilter === "0-50")   return k <= 50;
+        if (salaryFilter === "50-100") return k > 50 && k <= 100;
+        if (salaryFilter === "100-150") return k > 100 && k <= 150;
+        if (salaryFilter === "150+")   return k > 150;
+        return true;
+      });
+    }
+
+    return items;
+  }, [jobsData?.items, jobTypeFilter, salaryFilter]);
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
     setPageNumber(1);
   };
 
+  const handleFilterChange = (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (value: string) => {
+      setter(value);
+      setPageNumber(1);
+    };
+
+  const clearAllFilters = () => {
+    setSearchValue("");
+    setJobTypeFilter("");
+    setSalaryFilter("");
+    setSortKey("default");
+    setPageNumber(1);
+  };
+
   const handlePageChange = (newPage: number) => setPageNumber(newPage);
   const handleJobClick = (jobId: string) => navigate(`/jobs/${jobId}`);
-
-  const toggleFilter = (label: string) => {
-    setActiveFilters((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]
-    );
-  };
 
   const toggleSave = (e: React.MouseEvent, jobId: string) => {
     e.stopPropagation();
@@ -11521,23 +10708,29 @@ const JobsListPage: React.FC = () => {
     });
   };
 
+  const hasActiveFilters = !!debouncedSearch || !!jobTypeFilter || !!salaryFilter || sortKey !== "default";
   const totalResults = jobsData?.totalCount ?? 0;
+  const displayCount = filteredItems.length;
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 lg:p-10">
       <div className="max-w-6xl mx-auto">
-        
-        {/* ── Search & Filter Section ── */}
-        <div className="bg-card border border-border rounded-[2.5rem] p-6 sm:p-8 mb-10 shadow-sm relative overflow-hidden">
-          <div className="relative z-10 space-y-6">
+
+        {/* ── Search & Filter Card ── */}
+        <div className="bg-card border border-border rounded-[2.5rem] p-6 sm:p-8 mb-10 shadow-sm relative">
+          <div className="relative z-10 space-y-5">
             <div className="space-y-1.5">
               <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight leading-none">
                 Explore <span className="text-primary">Opportunities</span>
               </h1>
-              <p className="text-lg text-muted-foreground font-medium">Find your next career move with AI-powered matching.</p>
+              <p className="text-lg text-muted-foreground font-medium">
+                Find your next career move with AI-powered matching.
+              </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-stretch gap-4">
+            {/* ── Search bar row ── */}
+            <div className="flex flex-col lg:flex-row items-stretch gap-3">
+              {/* Search Input */}
               <div className="flex-1 relative group">
                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                   <Search className="w-5 h-5 text-muted-foreground/80 group-focus-within:text-primary transition-colors" />
@@ -11554,50 +10747,144 @@ const JobsListPage: React.FC = () => {
                     onClick={() => { setSearchValue(""); setPageNumber(1); }}
                     className="absolute inset-y-0 right-0 pr-5 flex items-center text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                   >
-                    <AlertCircle className="w-5 h-5" />
+                    <X className="w-5 h-5" />
                   </button>
                 )}
               </div>
-              
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                {FILTERS.map((f) => {
-                  const active = activeFilters.includes(f.label);
-                  return (
-                    <button
-                      key={f.label}
-                      onClick={() => toggleFilter(f.label)}
-                      className={`inline-flex items-center gap-2 rounded-xl px-5 h-16 text-xs font-black
-                                  border transition-all duration-300 select-none uppercase tracking-widest whitespace-nowrap
-                                  ${active
-                          ? "bg-primary text-primary-foreground border-primary shadow-xl"
-                          : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-primary shadow-sm"
-                        }`}
-                    >
-                      {f.icon}
-                      {f.label}
-                    </button>
-                  );
-                })}
-              </div>
+
+              {/* Toggle filter panel button */}
+              <button
+                id="toggle-filters-btn"
+                onClick={() => setShowFilters(p => !p)}
+                className={`
+                  inline-flex items-center gap-2 rounded-2xl px-6 h-16 text-xs font-black
+                  border transition-all duration-300 uppercase tracking-widest whitespace-nowrap
+                  ${showFilters
+                    ? "bg-primary text-primary-foreground border-primary shadow-xl"
+                    : "bg-card text-muted-foreground border-border shadow-sm hover:border-primary/50 hover:text-primary"
+                  }`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filters
+                {hasActiveFilters && (
+                  <span className="ml-1 bg-white/30 text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center">
+                    {[!!debouncedSearch, !!jobTypeFilter, !!salaryFilter, sortKey !== "default"].filter(Boolean).length}
+                  </span>
+                )}
+              </button>
             </div>
+
+            {/* ── Expandable Filter Panel ── */}
+            {showFilters && (
+              <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border animate-in fade-in slide-in-from-top-2 duration-300">
+                {/* Job Type */}
+                <FilterSelect
+                  id="job-type-filter"
+                  icon={<Briefcase className="w-3.5 h-3.5" />}
+                  value={jobTypeFilter}
+                  options={JOB_TYPE_OPTIONS}
+                  onChange={handleFilterChange(setJobTypeFilter)}
+                />
+
+                {/* Salary */}
+                <FilterSelect
+                  id="salary-filter"
+                  icon={<DollarSign className="w-3.5 h-3.5" />}
+                  value={salaryFilter}
+                  options={SALARY_OPTIONS}
+                  onChange={handleFilterChange(setSalaryFilter)}
+                />
+
+                {/* Sort */}
+                <FilterSelect
+                  id="sort-filter"
+                  icon={<ArrowUpDown className="w-3.5 h-3.5" />}
+                  value={sortKey}
+                  options={SORT_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                  onChange={(v) => { setSortKey(v); setPageNumber(1); }}
+                />
+
+                {/* Clear all */}
+                {hasActiveFilters && (
+                  <button
+                    id="clear-all-filters-btn"
+                    onClick={clearAllFilters}
+                    className="inline-flex items-center gap-2 rounded-xl px-4 h-10 text-[10px] font-black border border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive/10 transition-all uppercase tracking-widest"
+                  >
+                    <X className="w-3 h-3" /> Clear All
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ── Active Filter Pills ── */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap gap-2">
+                {debouncedSearch && (
+                  <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg px-3 py-1.5">
+                    <Search className="w-3 h-3" />
+                    "{debouncedSearch}"
+                    <button onClick={() => setSearchValue("")} className="ml-1 hover:text-primary/70">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {jobTypeFilter && (
+                  <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg px-3 py-1.5">
+                    <Briefcase className="w-3 h-3" />
+                    {jobTypeFilter}
+                    <button onClick={() => setJobTypeFilter("")} className="ml-1 hover:text-primary/70">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {salaryFilter && (
+                  <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg px-3 py-1.5">
+                    <DollarSign className="w-3 h-3" />
+                    {SALARY_OPTIONS.find(o => o.value === salaryFilter)?.label}
+                    <button onClick={() => setSalaryFilter("")} className="ml-1 hover:text-primary/70">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {sortKey !== "default" && (
+                  <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg px-3 py-1.5">
+                    <ArrowUpDown className="w-3 h-3" />
+                    {SORT_OPTIONS.find(o => o.value === sortKey)?.label}
+                    <button onClick={() => setSortKey("default")} className="ml-1 hover:text-primary/70">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
         {/* ── Results Header ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 px-4">
           <div className="space-y-1">
-             <h2 className="text-xl font-black text-foreground uppercase tracking-widest">
-               {debouncedSearch ? `Search Results` : "Featured Jobs"}
-             </h2>
-             <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
-               {totalResults} positions found
-             </p>
+            <h2 className="text-xl font-black text-foreground uppercase tracking-widest">
+              {debouncedSearch ? "Search Results" : "Featured Jobs"}
+            </h2>
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
+              {isLoading ? "Loading..." : (
+                jobTypeFilter || salaryFilter
+                  ? `${displayCount} of ${totalResults} positions`
+                  : `${totalResults} positions found`
+              )}
+            </p>
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button variant="outline" className="h-12 px-6 rounded-xl border-border bg-card font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-all flex-1 sm:flex-none">
-              Relevant <ChevronDown className="w-3.5 h-3.5 ml-2" />
-            </Button>
-          </div>
+
+          {/* Inline Sort dropdown */}
+          <FilterSelect
+            id="sort-select-inline"
+            icon={<ArrowUpDown className="w-3.5 h-3.5" />}
+            value={sortKey}
+            options={SORT_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+            onChange={(v) => { setSortKey(v); setPageNumber(1); }}
+            compact
+          />
         </div>
 
         {/* ── Job List Content ── */}
@@ -11617,22 +10904,22 @@ const JobsListPage: React.FC = () => {
               </p>
               <Button variant="outline" onClick={() => window.location.reload()} className="rounded-xl h-12 px-8 font-black">Try Again</Button>
             </div>
-          ) : jobsData?.items?.length === 0 ? (
+          ) : filteredItems.length === 0 ? (
             <div className="bg-card border border-border rounded-[2.5rem] p-20 text-center shadow-sm">
               <div className="w-20 h-20 bg-muted text-muted-foreground/60 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <Briefcase className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-black text-foreground mb-2">No Jobs Found</h3>
               <p className="text-lg text-muted-foreground max-w-xs mx-auto mb-8 leading-relaxed">
-                No positions match your current search criteria. Try broadening your keywords.
+                No positions match your current filters. Try adjusting your search criteria.
               </p>
-              <Button onClick={() => { setSearchValue(""); setPageNumber(1); }} variant="outline" className="rounded-xl h-12 px-8 font-black">
-                Browse All Jobs
+              <Button onClick={clearAllFilters} variant="outline" className="rounded-xl h-12 px-8 font-black">
+                Clear All Filters
               </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              {jobsData!.items.map((job, idx) => {
+              {filteredItems.map((job, idx) => {
                 const logoColor = getLogoColor(job.companyDetails?.name);
                 const hasApplied = job.iApplied;
                 const isSaved = savedJobs.has(job.id);
@@ -11647,31 +10934,31 @@ const JobsListPage: React.FC = () => {
                   >
                     {/* Company Logo & Match */}
                     <div className="p-4 sm:p-6 shrink-0 flex items-center justify-center">
-                       <div className="relative">
-                          <div
-                            className="absolute -top-3 -left-3 z-10 flex items-center gap-1
-                                       px-3 py-1.5 rounded-xl text-[10px] font-black text-white shadow-lg"
-                            style={{ background: "linear-gradient(135deg, #f59e0b, #ef4444)" }}
-                          >
-                            <Star className="w-3 h-3 fill-white" />
-                            {matchPct}%
-                          </div>
-                          <div
-                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.75rem] flex items-center justify-center
-                                       text-3xl font-black shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500"
-                            style={{ backgroundColor: logoColor.bg, color: logoColor.text }}
-                          >
-                            {job.companyDetails?.profilePictureUrl ? (
-                              <img
-                                src={job.companyDetails.profilePictureUrl}
-                                alt={job.companyDetails.name ?? "Company"}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              getCompanyInitial(job.companyDetails?.name)
-                            )}
-                          </div>
-                       </div>
+                      <div className="relative">
+                        <div
+                          className="absolute -top-3 -left-3 z-10 flex items-center gap-1
+                                     px-3 py-1.5 rounded-xl text-[10px] font-black text-white shadow-lg"
+                          style={{ background: "linear-gradient(135deg, #f59e0b, #ef4444)" }}
+                        >
+                          <Star className="w-3 h-3 fill-white" />
+                          {matchPct}%
+                        </div>
+                        <div
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.75rem] flex items-center justify-center
+                                     text-3xl font-black shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500"
+                          style={{ backgroundColor: logoColor.bg, color: logoColor.text }}
+                        >
+                          {job.companyDetails?.profilePictureUrl ? (
+                            <img
+                              src={job.companyDetails.profilePictureUrl}
+                              alt={job.companyDetails.name ?? "Company"}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            getCompanyInitial(job.companyDetails?.name)
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     {/* Content */}
@@ -11692,49 +10979,57 @@ const JobsListPage: React.FC = () => {
                           <CheckCircle className="w-4 h-4 text-green-500" />
                           {job.companyDetails?.name || "Premium Partner"}
                         </p>
-                        <p className="text-sm font-medium text-muted-foreground/80 flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4" />
-                          {job.location || "Remote Available"}
-                        </p>
+                        {job.location && (
+                          <p className="text-sm font-medium text-muted-foreground/80 flex items-center gap-1.5">
+                            <MapPin className="w-4 h-4" />
+                            {job.location}
+                          </p>
+                        )}
                         <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5" />
-                          {getPostedLabel(job.postedDate)}
+                          {job.postedDate ? getPostedLabel(job.postedDate) : "Recently"}
                         </p>
+                        {job.deadlineDate && (
+                          <p className="text-[10px] font-black text-amber-500/80 uppercase tracking-widest flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5" />
+                            Deadline: {new Date(job.deadlineDate).toLocaleDateString("en-US", { month: "short", day: "2-digit" })}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
-                         {job.jobType && (
-                           <span className="text-[10px] font-black text-muted-foreground bg-muted px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-border">
-                             {job.jobType}
-                           </span>
-                         )}
-                         {(job.salaryMin || job.salaryMax) && (
-                           <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-primary/20">
-                             <DollarSign className="w-3 h-3 inline mr-0.5" />
-                             {job.salaryMin && `$${(job.salaryMin / 1000).toFixed(0)}k`}
-                             {job.salaryMax && ` - $${(job.salaryMax / 1000).toFixed(0)}k`}
-                           </span>
-                         )}
-                         {job.jobRequirements?.slice(0, 1).map((req, i) => (
-                           <span key={i} className="text-[10px] font-black text-muted-foreground bg-muted/65 px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-border">
-                             {typeof req === "string" ? req : (req as { name?: string }).name ?? ""}
-                           </span>
-                         ))}
+                        {job.jobType && (
+                          <span className="text-[10px] font-black text-muted-foreground bg-muted px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-border">
+                            {job.jobType}
+                          </span>
+                        )}
+                        {(job.salaryMin || job.salaryMax) && (
+                          <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-primary/20 flex items-center gap-0.5">
+                            <DollarSign className="w-3 h-3 inline" />
+                            {job.salaryMin && `$${(job.salaryMin / 1000).toFixed(0)}k`}
+                            {job.salaryMax && ` – $${(job.salaryMax / 1000).toFixed(0)}k`}
+                          </span>
+                        )}
+                        {job.jobRequirements?.slice(0, 2).map((req, i) => (
+                          <span key={i} className="text-[10px] font-black text-muted-foreground bg-muted/65 px-3 py-1.5 rounded-xl uppercase tracking-tighter border border-border">
+                            {typeof req === "string" ? req : (req as { name?: string }).name ?? ""}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
                     {/* Actions */}
                     <div className="flex sm:flex-col items-center justify-between sm:justify-center gap-4 p-6 sm:p-4 border-t sm:border-t-0 sm:border-l border-border/60 min-w-[140px]">
                       {hasApplied ? (
-                         <div className="flex flex-col items-center gap-1.5">
-                           <CheckCircle className="w-6 h-6 text-green-500" />
-                           <span className="text-[10px] font-black uppercase tracking-widest text-green-600">Applied</span>
-                         </div>
+                        <div className="flex flex-col items-center gap-1.5">
+                          <CheckCircle className="w-6 h-6 text-green-500" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-green-600">Applied</span>
+                        </div>
                       ) : (
                         <div className="flex items-center gap-3 w-full justify-center">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             className={`h-12 w-12 rounded-xl transition-all ${isSaved ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground/60 hover:text-primary"}`}
                             onClick={(e) => toggleSave(e, job.id)}
                           >
@@ -11746,7 +11041,7 @@ const JobsListPage: React.FC = () => {
                         </div>
                       )}
                       <div className="hidden sm:flex items-center gap-1 text-[9px] font-black text-muted-foreground/60 uppercase tracking-tighter">
-                         <Users className="w-3 h-3" /> [12] Applied
+                        <Users className="w-3 h-3" /> Hiring
                       </div>
                     </div>
                   </div>
@@ -11760,7 +11055,7 @@ const JobsListPage: React.FC = () => {
         {jobsData && jobsData.totalPages > 1 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mt-20 mb-12 px-6">
             <p className="text-[10px] font-black text-muted-foreground/80 uppercase tracking-[0.2em]">
-              Page {pageNumber} of {jobsData.totalPages}
+              Page {pageNumber} of {jobsData.totalPages} · {totalResults} total
             </p>
 
             <div className="flex items-center gap-3">
@@ -11775,8 +11070,19 @@ const JobsListPage: React.FC = () => {
               </Button>
 
               <div className="flex items-center gap-2 px-4">
-                {Array.from({ length: Math.min(jobsData.totalPages, 3) }, (_, i) => {
-                  const page = i + 1;
+                {Array.from({ length: Math.min(jobsData.totalPages, 5) }, (_, i) => {
+                  // Window around current page
+                  let page: number;
+                  const total = jobsData.totalPages;
+                  if (total <= 5) {
+                    page = i + 1;
+                  } else if (pageNumber <= 3) {
+                    page = i + 1;
+                  } else if (pageNumber >= total - 2) {
+                    page = total - 4 + i;
+                  } else {
+                    page = pageNumber - 2 + i;
+                  }
                   const isCurrent = page === pageNumber;
                   return (
                     <button
@@ -11842,226 +11148,6 @@ export const applyJobSchema = z.object({
     .max(500, "Notes must be at most 500 characters")
     .optional(),
 });
-````
-
-## File: src/features/jobs/services/jobService.ts
-````typescript
-import { apiClient } from "@/lib/api/client";
-import type {
-  JobsListResponse,
-  JobsQueryParams,
-  JobResponse,
-  ApplyJobRequest,
-  AddJobRequest,
-  ApplicantsListResponse,
-  ApiResult,
-} from "../types/jobs";
-
-
-/**
- * Jobs Service
- * Handles all Jobs endpoints
- */
-class JobService {
-  /**
-   * Get all jobs with filters
-   * GET /Jobs
-   */
-  async getAllJobs(params?: JobsQueryParams, signal?: AbortSignal): Promise<JobsListResponse> {
-    const queryParams = new URLSearchParams();
-    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
-    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
-    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
-    
-    const queryString = queryParams.toString();
-    const response = await apiClient.get<any>(`/jobs?${queryString}`, { signal });
-    return response.value !== undefined ? response.value : response;
-  }
-
-  /**
-   * Get job by id
-   * GET /api/jobs/{id}
-   */
-  async getJobById(id: string): Promise<JobResponse> {
-    const response = await apiClient.get<ApiResult<JobResponse>>(`/jobs/${id}`);
-    return response.value;
-  }
-
-  /**
-   * Apply to a job
-   * POST /api/jobs/{jobId}/apply
-   */
-  async applyToJob(jobId: string, request: ApplyJobRequest): Promise<void> {
-    const formData = new FormData();
-    formData.append("CV", request.cv);
-    formData.append("Phone", request.phone);
-    if (request.notes) formData.append("Notes", request.notes);
-    
-    await apiClient.post(`/jobs/${jobId}/apply`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-  }
-
-  /**
-   * Add new job
-   * POST /api/jobs
-   */
-  async addJob(request: AddJobRequest): Promise<JobResponse> {
-    const response = await apiClient.post<JobResponse>(`/jobs`, request);
-    return response;
-  }
-
-  /**
-   * Update job
-   * PUT /api/jobs/{jobId}
-   */
-  async updateJob(jobId: string, request: AddJobRequest): Promise<void> {
-    await apiClient.put(`/jobs/${jobId}`, request);
-  }
-
-  /**
-   * Delete job
-   * DELETE /api/jobs/{jobId}
-   */
-  async deleteJob(jobId: string): Promise<void> {
-    await apiClient.delete(`/jobs/${jobId}`);
-  }
-
-  /**
-   * Toggle job active/inactive status
-   * PUT /api/jobs/{jobId}/toggle-status
-   */
-  async toggleJobStatus(jobId: string): Promise<void> {
-    await apiClient.put(`/jobs/${jobId}/toggle-status`);
-  }
-
-  /**
-   * Get job applicants
-   * GET /api/jobs/{jobId}/applicants
-   */
-  async getJobApplicants(jobId: string, params?: JobsQueryParams, signal?: AbortSignal): Promise<ApplicantsListResponse> {
-    const queryParams = new URLSearchParams();
-    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
-    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
-    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
-    if (params?.sortDirection) queryParams.append("SortDirection", params.sortDirection);
-    
-    const url = queryParams.toString()
-      ? `/jobs/${jobId}/applicants?${queryParams.toString()}`
-      : `/jobs/${jobId}/applicants`;
-
-    const response = await apiClient.get<any>(url, { signal });
-    return response.value !== undefined ? response.value : response;
-  }
-
-  /**
-   * Get jobs by company id
-   * GET /api/jobs/company/{companyId}
-   */
-  async getJobsByCompany(companyId: string, params?: JobsQueryParams, signal?: AbortSignal): Promise<JobsListResponse> {
-    const queryParams = new URLSearchParams();
-    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
-    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
-    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
-    
-    const url = queryParams.toString()
-      ? `/jobs/company/${companyId}?${queryParams.toString()}`
-      : `/jobs/company/${companyId}`;
-
-    const response = await apiClient.get<any>(url, { signal });
-    return response.value !== undefined ? response.value : response;
-  }
-
-
-}
-
-export const jobService = new JobService();
-````
-
-## File: src/features/jobs/types/jobs.ts
-````typescript
-import type { PaginatedResponse } from "@/shared/types/pagination";
-
-export interface CompanyDetails {
-  companyId: string;
-  name: string | null;
-  profilePictureUrl: string | null;
-}
-
-export interface JobResponse {
-  id: string;
-  jobTitle: string | null;
-  jobType: string | null;
-  jobDescription: string | null;
-  location: string | null;
-  jobRequirements: string[] | null;
-  salaryMin: number | null;
-  salaryMax: number | null;
-  experienceLevel: number | null;
-  postedDate: string;
-  deadlineDate: string | null;
-  isActive: boolean;
-  iApplied: boolean;
-  companyDetails: CompanyDetails;
-}
-
-export type JobsListResponse = PaginatedResponse<JobResponse>;
-
-export interface ApplicantResponse {
-  id: string;
-  applicationId: string;
-  applicantionId?: string; // Support backend typo
-  applicantId: string;
-  cvPath: string;
-  cVPath?: string; // Support both cases
-  phone: string | null;
-  notes: string | null;
-  appliedAt: string;
-  applicantName: string;
-  applicantEmail: string;
-  applicantImageUrl: string | null;
-}
-
-
-export type ApplicantsListResponse = PaginatedResponse<ApplicantResponse>;
-
-export interface ApiResult<T> {
-  value: T;
-  isSuccess: boolean;
-  isFailure: boolean;
-  error?: {
-    code: string;
-    description: string;
-    statusCode: number;
-  };
-}
-
-export interface JobsQueryParams {
-  searchValue?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  sortDirection?: "ASC" | "DESC";
-}
-
-export interface ApplyJobRequest {
-  cv: File;
-  phone: string;
-  notes?: string;
-}
-
-export interface AddJobRequest {
-  jobTitle: string;
-  jobType: string;
-  jobDescription: string;
-  location?: string | null;
-  jobRequirements: string[];
-  experienceLevel?: number | null;
-  salaryMin?: number | null;
-  salaryMax?: number | null;
-  deadlineDate?: string | null;
-}
 ````
 
 ## File: src/features/notifications/components/NotificationItem.tsx
@@ -12254,6 +11340,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationsService } from "../services/notificationsService";
 import { notificationsSignalrService } from "../services/notificationsSignalrService";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import type {
   Notification,
   NotificationPreference,
@@ -12283,11 +11370,18 @@ const NotificationsContext = createContext<NotificationsContextType | undefined>
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
+  const { token, isAuthenticated } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
   const [params, setParams] = useState<GetNotificationsParams | undefined>(undefined);
 
-  // Connect to SignalR on mount
+  // Connect to SignalR when authenticated
   useEffect(() => {
+    if (!isAuthenticated || !token) {
+      setIsConnected(false);
+      notificationsSignalrService.disconnect();
+      return;
+    }
+
     let mounted = true;
 
     const connect = async () => {
@@ -12311,7 +11405,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       mounted = false;
       notificationsSignalrService.disconnect();
     };
-  }, []);
+  }, [token, isAuthenticated]);
 
   // ─── Queries ───────────────────────────────────────────────────────────────
 
@@ -12830,9 +11924,16 @@ export const notificationsSignalrService = new NotificationsSignalRService();
  * Notification Types
  */
 export const NotificationType = {
-  NewMessage: "NewMessage",
+  NewFollower: "NewFollower",
+  PostLiked: "PostLiked",
+  PostCommented: "PostCommented",
+  CommentReplied: "CommentReplied",
+  CommentReacted: "CommentReacted",
+  JobApplicationReceived: "JobApplicationReceived",
   JobApplicationStatusChanged: "JobApplicationStatusChanged",
+  NewMessage: "NewMessage",
   SecurityAlert: "SecurityAlert",
+  GeneralInfo: "GeneralInfo",
   NewJobPosted: "NewJobPosted",
 } as const;
 
@@ -13814,7 +12915,7 @@ export const LikesListModal = ({ postId, open, onOpenChange }: LikesListModalPro
             <ul>
               {likers.items.map((liker, index) => (
                 <li
-                  key={`${liker.userProfileId}-${liker.likedAt}`}
+                  key={`${liker.userId || liker.userProfileId}-${liker.likedAt}`}
                   className={cn(
                     "flex items-center gap-3 px-4 py-4 sm:px-6",
                     index < likers.items.length - 1 && "border-b border-border-subtle"
@@ -15109,6 +14210,7 @@ export interface PostsQueryParams {
 
 export interface LikeUser {
   userProfileId: string;
+  userId?: string;
   fullName: string;
   profilePictureUrl: string | null;
   likedAt: string;
@@ -15117,6 +14219,7 @@ export interface LikeUser {
 export interface LikeResponse {
   postId: string;
   likesCount: number;
+  iLiked: boolean;
 }
 
 export type PostResponse = Post;
@@ -15488,6 +14591,174 @@ export const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
 };
 ````
 
+## File: src/features/profile/components/ChangePasswordForm.tsx
+````typescript
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import { Button } from "@/shared/components/ui/button";
+import { useChangePassword } from "@/features/profile/hooks/useProfile";
+import { ShieldCheck } from "lucide-react";
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z
+    .string()
+    .min(8, "New password must be at least 8 characters")
+    .max(100, "New password must be less than 100 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[^a-zA-Z0-9]/, "Password must contain at least one special character"),
+  confirmNewPassword: z.string().min(1, "Please confirm your new password"),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords do not match",
+  path: ["confirmNewPassword"],
+});
+
+type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
+
+export const ChangePasswordForm: React.FC = () => {
+  const changePassword = useChangePassword();
+
+  const form = useForm<ChangePasswordFormData>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+  });
+
+  const onSubmit = async (data: ChangePasswordFormData) => {
+    changePassword.mutate(
+      {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      },
+      {
+        onSuccess: () => {
+          form.reset({
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
+          });
+        },
+        onError: (error: any) => {
+          // Parse backend error
+          const response = error?.response?.data;
+          const description = response?.description || response?.detail || "Failed to change password. Please verify current password or policy.";
+          const code = response?.code || "";
+
+          // If current password is wrong or it's a PasswordMismatch
+          if (code === "PasswordMismatch" || description.toLowerCase().includes("current password") || description.toLowerCase().includes("incorrect")) {
+            form.setError("currentPassword", {
+              type: "manual",
+              message: description,
+            });
+          } else {
+            // Otherwise, it's likely a password policy issue (weak password)
+            form.setError("newPassword", {
+              type: "manual",
+              message: description,
+            });
+          }
+        },
+      }
+    );
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm">
+      <div className="flex items-center gap-2 mb-4">
+        <ShieldCheck className="w-5 h-5 text-primary" />
+        <h3 className="text-base font-bold text-foreground">Change Password</h3>
+      </div>
+      <p className="text-xs text-muted-foreground mb-6">
+        Update your password to secure your account. Password must be at least 8 characters and include uppercase, lowercase, and a special character.
+      </p>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="currentPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[13px] font-semibold text-foreground/90">Current Password</FormLabel>
+                <FormControl>
+                  <input
+                    type="password"
+                    {...field}
+                    className="w-full h-10 px-3 bg-card border border-border rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                    placeholder="••••••••"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="newPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[13px] font-semibold text-foreground/90">New Password</FormLabel>
+                <FormControl>
+                  <input
+                    type="password"
+                    {...field}
+                    className="w-full h-10 px-3 bg-card border border-border rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                    placeholder="••••••••"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmNewPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[13px] font-semibold text-foreground/90">Confirm New Password</FormLabel>
+                <FormControl>
+                  <input
+                    type="password"
+                    {...field}
+                    className="w-full h-10 px-3 bg-card border border-border rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                    placeholder="••••••••"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            disabled={changePassword.isPending}
+            className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold uppercase tracking-wider text-xs rounded-xl mt-4 shadow-md transition-all active:scale-[0.98]"
+          >
+            {changePassword.isPending ? "Updating Password..." : "Update Password"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+};
+````
+
 ## File: src/features/profile/components/CvSection.tsx
 ````typescript
 import React from "react";
@@ -15750,6 +15021,7 @@ import { extractErrorMessage } from "@/lib/api/errors";
 import { authService } from "@/features/auth/services/authService";
 import type {
   BasicInfoRequest,
+  ChangePasswordRequest,
 } from "@/features/profile/types/profile";
 
 /**
@@ -15920,6 +15192,18 @@ export const useDeleteCv = () => {
     },
   });
 };
+
+/**
+ * Hook for changing password
+ */
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: (data: ChangePasswordRequest) => profileService.changePassword(data),
+    onSuccess: () => {
+      toast.success("Password changed successfully!");
+    },
+  });
+};
 ````
 
 ## File: src/features/profile/hooks/userHooks.ts
@@ -15965,6 +15249,43 @@ export const useUsersList = (filters?: Record<string, any>) => {
 };
 ````
 
+## File: src/features/profile/pages/ChangePasswordPage.tsx
+````typescript
+import React from "react";
+import { ChevronRight } from "lucide-react";
+import { ChangePasswordForm } from "@/features/profile/components/ChangePasswordForm";
+
+const ChangePasswordPage: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 lg:p-10">
+      <div className="max-w-2xl mx-auto">
+        {/* ── Page Header ── */}
+        <div className="bg-card border border-border rounded-[2.5rem] p-6 sm:p-8 mb-10 shadow-sm relative overflow-hidden">
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="space-y-1.5">
+               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">
+                 <span>Account</span>
+                 <ChevronRight className="w-3 h-3" />
+                 <span className="text-primary">Security</span>
+               </div>
+               <h1 className="text-3xl font-black tracking-tight leading-none text-foreground">
+                 Change <span className="text-primary">Password</span>
+               </h1>
+               <p className="text-lg text-muted-foreground font-medium">Update your credentials to keep your account secure.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Change Password Form ── */}
+        <ChangePasswordForm />
+      </div>
+    </div>
+  );
+};
+
+export default ChangePasswordPage;
+````
+
 ## File: src/features/profile/pages/EditProfilePage.tsx
 ````typescript
 import React, { useState } from "react";
@@ -15993,6 +15314,7 @@ import { UserGender } from "@/features/profile/types/profile";
 import { ProfilePhotoSection } from "@/features/profile/components/ProfilePhotoSection";
 import { CvSection } from "@/features/profile/components/CvSection";
 import { BasicInfoForm } from "@/features/profile/components/BasicInfoForm";
+
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -16267,6 +15589,7 @@ const EditProfilePage: React.FC = () => {
                 isSaving={updateBasicInfo.isPending}
               />
             </div>
+
           </div>
         </div>
 
@@ -16394,10 +15717,7 @@ const ProfilePage: React.FC = () => {
        (user?.email && profile.email === user.email))
     : isOwnProfileById;
 
-  // Get the actual user ID for navigation
-  // If userId is in URL (visiting someone's profile or own profile with ID), use it
-  // If userId is not in URL (visiting /profile directly), use user?.id
-  const actualUserId = userId || user?.id;
+  const actualUserId = userId && userId !== "undefined" ? userId : user?.id;
 
   const {
     posts: userPosts,
@@ -16845,6 +16165,7 @@ import { apiClient } from "@/lib/api/client";
 import type {
   UserProfileResponse,
   BasicInfoRequest,
+  ChangePasswordRequest,
 } from "../types/profile";
 
 
@@ -16945,6 +16266,13 @@ class ProfileService {
    */
   async deleteCv(): Promise<void> {
     await apiClient.delete("/UserProfile/cv");
+  }
+
+  /**
+   * Change user password
+   */
+  async changePassword(data: ChangePasswordRequest): Promise<void> {
+    await apiClient.put("/UserProfile/password", data);
   }
 }
 
@@ -17055,6 +16383,11 @@ export interface BasicInfoRequest {
   graduationYear?: number | null;
   skills?: string[];
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
 ````
 
 ## File: src/features/roadmaps/hooks/useRoadmap.ts
@@ -17099,22 +16432,39 @@ export const useToggleSaveRoadmap = () => {
   return useMutation({
     mutationFn: (id: number) => roadmapService.toggleSaveRoadmap(id),
     onSuccess: (_, variables) => {
+      let isSavedBefore: boolean | undefined = undefined;
+
+      // 1. Try single details cache
+      const details = queryClient.getQueryData<any>(["roadmaps", variables]);
+      if (details && typeof details.isSaved === "boolean") {
+        isSavedBefore = details.isSaved;
+      }
+
+      // 2. If not found, search list caches
+      if (isSavedBefore === undefined) {
+        const allQueries = queryClient.getQueriesData<any>({ queryKey: ["roadmaps"] });
+        for (const [, queryData] of allQueries) {
+          if (queryData && Array.isArray(queryData.items)) {
+            const found = queryData.items.find((item: any) => item.id === variables);
+            if (found && typeof found.isSaved === "boolean") {
+              isSavedBefore = found.isSaved;
+              break;
+            }
+          }
+        }
+      }
+
       // Invalidate all roadmap queries
       queryClient.invalidateQueries({ queryKey: ["roadmaps"] });
-      queryClient.invalidateQueries({ queryKey: ["roadmaps", "saved"] });
-      queryClient.invalidateQueries({ queryKey: ["roadmaps", variables] });
-      
-      // Show appropriate success message
-      const currentData = queryClient.getQueryData(["roadmaps", variables]) as 
-        { data: { items: RoadmapListItem[] } } | undefined;
-      const roadmap = currentData?.data?.items?.find(r => r.id === variables);
-      
-      if (roadmap) {
+
+      if (isSavedBefore !== undefined) {
         toast.success(
-          roadmap.isSaved 
+          isSavedBefore 
             ? "Roadmap unsaved successfully!" 
             : "Roadmap saved successfully!"
         );
+      } else {
+        toast.success("Roadmap status updated successfully!");
       }
     },
     onError: (error) => {
@@ -17429,7 +16779,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 import {
   BookOpen, Bookmark, BookmarkCheck,
   ChevronLeft, ChevronRight, Map, Sparkles,
-  Calendar, Plus,
+  Calendar,
 } from "lucide-react";
 import type { RoadmapListItem } from "@/features/roadmaps/types/roadmap";
 
@@ -17588,29 +16938,7 @@ const RoadmapsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-foreground p-4 md:p-8 lg:p-10">
       <div className="max-w-6xl mx-auto">
-        {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
-          <div className="space-y-3">
-             {/* Breadcrumb */}
-             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-               <span>Resources</span>
-               <ChevronRight className="w-3 h-3 opacity-50" />
-               <span className="text-primary">Roadmaps</span>
-             </div>
-             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-none text-foreground">
-               Skill <span className="text-primary">Architect</span>
-             </h1>
-             <p className="text-lg text-muted-foreground font-medium max-w-lg leading-relaxed">
-               AI-engineered learning paths to master your industry benchmarks.
-             </p>
-          </div>
-          <Button
-            className="w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 px-8 gap-3 font-bold shadow-xl shadow-primary/10 transition-all active:scale-[0.98]"
-            onClick={() => {}}
-          >
-            <Plus className="w-5 h-5" /> New Custom Path
-          </Button>
-        </div>
+
 
         {/* ── Tabs ── */}
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -18120,11 +17448,26 @@ class ApiClient {
     const response = await this.get<any>("/UserProfile");
     if (response && !response.id) {
       try {
-        const storedUserStr = localStorage.getItem("auth_user");
-        if (storedUserStr) {
-          const storedUser = JSON.parse(storedUserStr);
-          if (storedUser && storedUser.id) {
-            response.id = storedUser.id;
+        const token = localStorage.getItem("auth_token");
+        if (token) {
+          const parts = token.split(".");
+          if (parts.length === 3) {
+            const payload = parts[1];
+            const paddedPayload = payload + "=".repeat((4 - (payload.length % 4)) % 4);
+            const decodedPayload = atob(paddedPayload.replace(/-/g, "+").replace(/_/g, "/"));
+            const parsed = JSON.parse(decodedPayload);
+            if (parsed && parsed.sub) {
+              response.id = parsed.sub;
+            }
+          }
+        }
+        if (!response.id) {
+          const storedUserStr = localStorage.getItem("auth_user");
+          if (storedUserStr) {
+            const storedUser = JSON.parse(storedUserStr);
+            if (storedUser && storedUser.id) {
+              response.id = storedUser.id;
+            }
           }
         }
       } catch (e) {
@@ -19393,10 +18736,116 @@ export default AppSidebar;
 ## File: src/shared/components/navigation/Footer.tsx
 ````typescript
 import { Link } from "react-router-dom";
-import { Users } from "lucide-react";
+import { Github, Linkedin, Twitter, MessageSquare, Mail, ShieldCheck } from "lucide-react";
 
 const Footer = () => {
-  return null;
+  return (
+    <footer className="bg-card/40 backdrop-blur-md border-t border-border/50 text-foreground py-16 relative overflow-hidden">
+      {/* Background Accent Gradients */}
+      <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+          {/* Column 1: Brand Info */}
+          <div className="lg:col-span-2 space-y-5">
+            <Link to="/" className="flex flex-col">
+              <span className="text-xl font-bold tracking-tight text-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
+                Career <span className="text-primary">Path</span>
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">Elevate Your Career Journey</span>
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              Empowering professionals to navigate their career journey with AI-driven insights, smart application tracking, interactive mock interviews, and personalized roadmaps.
+            </p>
+            <div className="flex items-center gap-3">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all duration-300">
+                <Github className="h-5 w-5" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all duration-300">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all duration-300">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all duration-300">
+                <MessageSquare className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Column 2: Platform */}
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Platform</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">Browse Jobs</Link>
+              </li>
+              <li>
+                <Link to="/job-tracker" className="text-muted-foreground hover:text-primary transition-colors">Job Tracker</Link>
+              </li>
+              <li>
+                <Link to="/roadmaps" className="text-muted-foreground hover:text-primary transition-colors">AI Roadmaps</Link>
+              </li>
+              <li>
+                <Link to="/ai" className="text-muted-foreground hover:text-primary transition-colors">AI Analysis</Link>
+              </li>
+              <li>
+                <Link to="/posts" className="text-muted-foreground hover:text-primary transition-colors">Community Posts</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Resources */}
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Resources</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/help" className="text-muted-foreground hover:text-primary transition-colors">Help Center</Link>
+              </li>
+              <li>
+                <Link to="/pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing Plans</Link>
+              </li>
+              <li>
+                <a href="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQs</a>
+              </li>
+              <li>
+                <a href="/tutorials" className="text-muted-foreground hover:text-primary transition-colors">Tutorials</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact & Info */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Support</h3>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Mail className="h-4 w-4 shrink-0 text-primary" />
+              <a href="mailto:support@careerpath.com" className="hover:text-primary transition-colors">support@careerpath.com</a>
+            </div>
+            <div className="pt-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-medium">
+                <ShieldCheck className="h-3.5 w-3.5" /> All systems operational
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div>
+            &copy; {new Date().getFullYear()} Career Path. All rights reserved.
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-primary transition-colors">Terms of Service</a>
+            <a href="/cookies" className="hover:text-primary transition-colors">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 };
 
 export default Footer;
@@ -22623,6 +22072,7 @@ import {
   Shield,
   FileText,
   Bell,
+  Lock,
 } from "lucide-react";
 import { usePermissions } from "@/features/auth/hooks/usePermissions";
 import { authService } from "@/features/auth/services/authService";
@@ -22644,6 +22094,7 @@ export const useSidebarConfig = (): SidebarConfig | null => {
     { label: "AI Analysis", path: "/ai", icon: Brain },
     { label: "Roadmaps", path: "/roadmaps", icon: Map },
     { label: "Posts", path: "/posts", icon: FileText },
+    { label: "Change Password", path: "/change-password", icon: Lock },
   ];
 
   // Company tab: visible to company and admin roles
@@ -22949,4 +22400,1271 @@ export default defineConfig({
     }
   }
 });
+````
+
+## File: src/features/jobs/hooks/useJobs.ts
+````typescript
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { jobService } from "@/features/jobs/services/jobService";
+import { extractErrorMessage } from "@/lib/api/errors";
+import type {
+  JobsQueryParams,
+  ApplyJobRequest,
+  AddJobRequest,
+} from "@/features/jobs/types/jobs";
+
+
+/**
+ * Hook for getting all jobs
+ */
+export const useGetAllJobs = (params?: JobsQueryParams) => {
+  return useQuery({
+    queryKey: ["jobs", params],
+    queryFn: ({ signal }) => jobService.getAllJobs(params, signal),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+/**
+ * Hook for getting job by id
+ */
+export const useGetJobById = (id: string) => {
+  return useQuery({
+    queryKey: ["jobs", id],
+    queryFn: () => jobService.getJobById(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+/**
+ * Hook for applying to a job
+ */
+export const useApplyToJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ jobId, request }: { jobId: string; request: ApplyJobRequest }) =>
+      jobService.applyToJob(jobId, request),
+    onSuccess: () => {
+      toast.success("Applied successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+
+/**
+ * Hook for updating a job
+ */
+export const useUpdateJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ jobId, request }: { jobId: string; request: AddJobRequest }) =>
+      jobService.updateJob(jobId, request),
+    onSuccess: () => {
+      toast.success("Job updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+/**
+ * Hook for deleting a job
+ */
+export const useDeleteJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (jobId: string) => jobService.deleteJob(jobId),
+    onSuccess: () => {
+      toast.success("Job deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+/**
+ * Hook for toggling job status
+ */
+export const useToggleJobStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ jobId }: { jobId: string }) => jobService.toggleJobStatus(jobId),
+    onSuccess: () => {
+      toast.success("Job status updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+
+/**
+ * Hook for getting job applicants
+ */
+export const useGetJobApplicants = (jobId: string, params?: JobsQueryParams) => {
+  return useQuery({
+    queryKey: ["jobApplicants", jobId, params],
+    queryFn: ({ signal }) => jobService.getJobApplicants(jobId, params, signal),
+    enabled: !!jobId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+
+/**
+ * Hook for adding a job
+ */
+export const useAddJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: AddJobRequest) =>
+      jobService.addJob(request),
+    onSuccess: () => {
+      toast.success("Job added successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+/**
+ * Hook for accepting an applicant
+ */
+export const useAcceptApplicant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, jobId, submissionId }: { companyId: string; jobId: string; submissionId: string }) =>
+      jobService.acceptApplicant(companyId, jobId, submissionId),
+    onSuccess: () => {
+      toast.success("Applicant accepted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["jobApplicants"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+
+/**
+ * Hook for rejecting an applicant
+ */
+export const useRejectApplicant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, jobId, submissionId }: { companyId: string; jobId: string; submissionId: string }) =>
+      jobService.rejectApplicant(companyId, jobId, submissionId),
+    onSuccess: () => {
+      toast.success("Applicant rejected.");
+      queryClient.invalidateQueries({ queryKey: ["jobApplicants"] });
+    },
+    onError: (error) => {
+      const message = extractErrorMessage(error);
+      toast.error(message);
+    },
+  });
+};
+````
+
+## File: src/features/jobs/types/jobs.ts
+````typescript
+import type { PaginatedResponse } from "@/shared/types/pagination";
+
+export const SubmissionStatus = {
+  Pending: 0,
+  Accepted: 1,
+  Rejected: 2,
+} as const;
+
+export type SubmissionStatus = (typeof SubmissionStatus)[keyof typeof SubmissionStatus];
+
+
+export interface CompanyDetails {
+  companyId: string;
+  name: string | null;
+  profilePictureUrl: string | null;
+}
+
+export interface JobResponse {
+  id: string;
+  jobTitle: string | null;
+  jobType: string | null;
+  jobDescription: string | null;
+  location: string | null;
+  jobRequirements: string[] | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  experienceLevel: number | null;
+  postedDate: string;
+  deadlineDate: string | null;
+  isActive: boolean;
+  iApplied: boolean;
+  isMine: boolean;
+  companyDetails: CompanyDetails;
+}
+
+export type JobsListResponse = PaginatedResponse<JobResponse>;
+
+export interface ApplicantResponse {
+  id: string;
+  applicationId: string;
+  applicantionId?: string; // Support backend typo
+  applicantId: string;
+  cvPath: string;
+  cVPath?: string; // Support both cases
+  phone: string | null;
+  notes: string | null;
+  appliedAt: string;
+  applicantName: string;
+  applicantEmail: string;
+  applicantImageUrl: string | null;
+  status: SubmissionStatus;
+}
+
+
+export type ApplicantsListResponse = PaginatedResponse<ApplicantResponse>;
+
+export interface ApiResult<T> {
+  value: T;
+  isSuccess: boolean;
+  isFailure: boolean;
+  error?: {
+    code: string;
+    description: string;
+    statusCode: number;
+  };
+}
+
+export interface JobsQueryParams {
+  searchValue?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortColumn?: string;
+  sortDirection?: "ASC" | "DESC" | "Asc" | "Desc";
+}
+
+export interface ApplyJobRequest {
+  cv: File;
+  phone: string;
+  notes?: string;
+}
+
+export interface AddJobRequest {
+  jobTitle: string;
+  jobType: string;
+  jobDescription: string;
+  location?: string | null;
+  jobRequirements: string[];
+  experienceLevel?: number | null;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  deadlineDate?: string | null;
+}
+````
+
+## File: src/features/jobs/services/jobService.ts
+````typescript
+import { apiClient } from "@/lib/api/client";
+import type {
+  JobsListResponse,
+  JobsQueryParams,
+  JobResponse,
+  ApplyJobRequest,
+  AddJobRequest,
+  ApplicantsListResponse,
+  ApiResult,
+} from "../types/jobs";
+
+
+/**
+ * Jobs Service
+ * Handles all Jobs endpoints
+ */
+class JobService {
+  /**
+   * Get all jobs with filters
+   * GET /Jobs
+   */
+  async getAllJobs(params?: JobsQueryParams, signal?: AbortSignal): Promise<JobsListResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
+    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
+    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
+    if (params?.sortColumn) queryParams.append("SortColumn", params.sortColumn);
+    if (params?.sortDirection) queryParams.append("SortDirection", params.sortDirection);
+
+    const queryString = queryParams.toString();
+    const response = await apiClient.get<any>(`/jobs?${queryString}`, { signal });
+    return response.value !== undefined ? response.value : response;
+  }
+
+  /**
+   * Get job by id
+   * GET /api/jobs/{id}
+   */
+  async getJobById(id: string): Promise<JobResponse> {
+    const response = await apiClient.get<ApiResult<JobResponse>>(`/jobs/${id}`);
+    return response.value;
+  }
+
+  /**
+   * Apply to a job
+   * POST /api/jobs/{jobId}/apply
+   */
+  async applyToJob(jobId: string, request: ApplyJobRequest): Promise<void> {
+    const formData = new FormData();
+    formData.append("CV", request.cv);
+    formData.append("Phone", request.phone);
+    if (request.notes) formData.append("Notes", request.notes);
+    
+    await apiClient.post(`/jobs/${jobId}/apply`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
+  /**
+   * Add new job
+   * POST /api/jobs
+   */
+  async addJob(request: AddJobRequest): Promise<JobResponse> {
+    const response = await apiClient.post<JobResponse>(`/jobs`, request);
+    return response;
+  }
+
+  /**
+   * Update job
+   * PUT /api/jobs/{jobId}
+   */
+  async updateJob(jobId: string, request: AddJobRequest): Promise<void> {
+    await apiClient.put(`/jobs/${jobId}`, request);
+  }
+
+  /**
+   * Delete job
+   * DELETE /api/jobs/{jobId}
+   */
+  async deleteJob(jobId: string): Promise<void> {
+    await apiClient.delete(`/jobs/${jobId}`);
+  }
+
+  /**
+   * Toggle job active/inactive status
+   * PUT /api/jobs/{jobId}/toggle-status
+   */
+  async toggleJobStatus(jobId: string): Promise<void> {
+    await apiClient.put(`/jobs/${jobId}/toggle-status`);
+  }
+
+  /**
+   * Get job applicants
+   * GET /api/jobs/{jobId}/applicants
+   */
+  async getJobApplicants(jobId: string, params?: JobsQueryParams, signal?: AbortSignal): Promise<ApplicantsListResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
+    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
+    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
+    if (params?.sortDirection) queryParams.append("SortDirection", params.sortDirection);
+    
+    const url = queryParams.toString()
+      ? `/jobs/${jobId}/applicants?${queryParams.toString()}`
+      : `/jobs/${jobId}/applicants`;
+
+    const response = await apiClient.get<any>(url, { signal });
+    return response.value !== undefined ? response.value : response;
+  }
+
+  /**
+   * Get jobs by company id
+   * GET /api/jobs/company/{companyId}
+   */
+  async getJobsByCompany(companyId: string, params?: JobsQueryParams, signal?: AbortSignal): Promise<JobsListResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.searchValue) queryParams.append("SearchValue", params.searchValue);
+    if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
+    if (params?.pageSize) queryParams.append("PageSize", params.pageSize.toString());
+    
+    const url = queryParams.toString()
+      ? `/jobs/company/${companyId}?${queryParams.toString()}`
+      : `/jobs/company/${companyId}`;
+
+    const response = await apiClient.get<any>(url, { signal });
+    return response.value !== undefined ? response.value : response;
+  }
+
+  /**
+   * Accept an applicant
+   * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/accept
+   */
+  async acceptApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
+    await apiClient.put(`/JobSubmissions/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/accept`);
+  }
+
+  /**
+   * Reject an applicant
+   * PUT /companies/{companyId}/jobs/{jobId}/submissions/{submissionId}/reject
+   */
+  async rejectApplicant(companyId: string, jobId: string, submissionId: string): Promise<void> {
+    await apiClient.put(`/JobSubmissions/companies/${companyId}/jobs/${jobId}/submissions/${submissionId}/reject`);
+  }
+
+}
+
+export const jobService = new JobService();
+````
+
+## File: src/features/interview/pages/InterviewPage.tsx
+````typescript
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGetInterviewQuestions, useSubmitInterview } from "../hooks/useInterview";
+import { Skeleton } from "@/shared/components/ui/skeleton";
+import {
+  CheckCircle,
+  XCircle,
+  ArrowRight,
+  ArrowLeft,
+  Flag,
+  Clock,
+  RotateCcw,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import type { InterviewAnswer } from "@/features/interview/types/interview";
+
+/* ─── Expandable review card ─── */
+const ReviewCard: React.FC<{
+  idx: number;
+  detail: { questionId: number; question: string; yourAnswer: string; correctAnswer: string; isCorrect: boolean; explanation?: string };
+}> = ({ idx, detail }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm transition-all">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-muted/50 transition-colors"
+      >
+        {detail.isCorrect ? (
+          <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
+        ) : (
+          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
+        )}
+        <span className="text-sm font-semibold text-foreground flex-1 leading-relaxed">
+          <span className="text-muted-foreground mr-2 font-medium">{idx + 1}.</span>
+          {detail.question}
+        </span>
+        {open
+          ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
+          : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+        }
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 pt-0 border-t border-border/50 animate-in slide-in-from-top-2 duration-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+            <div className={`p-4 rounded-xl border ${detail.isCorrect ? "bg-emerald-500/10 border-emerald-500/20" : "bg-red-500/10 border-red-500/20"}`}>
+              <p className={`text-[10px] font-bold tracking-widest uppercase mb-2 ${detail.isCorrect ? "text-emerald-500" : "text-red-500"}`}>YOUR ANSWER</p>
+              <p className="text-sm text-foreground leading-relaxed">{detail.yourAnswer}</p>
+            </div>
+            <div className="p-4 rounded-xl border bg-emerald-500/10 border-emerald-500/20">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-emerald-500 mb-2">CORRECT ANSWER</p>
+              <p className="text-sm text-foreground leading-relaxed">{detail.correctAnswer}</p>
+            </div>
+          </div>
+          {detail.explanation && (
+            <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+              <div className="flex items-center gap-2 mb-2">
+                <BookOpen className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-bold text-foreground">Explanation</span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{detail.explanation}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ─── MAIN COMPONENT ─── */
+const InterviewPage: React.FC = () => {
+  const { jobId } = useParams<{ jobId: string }>();
+  const navigate = useNavigate();
+  const { data: questions, isLoading, error } = useGetInterviewQuestions(jobId || "");
+  const submitInterview = useSubmitInterview();
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<InterviewAnswer[]>([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [flagged, setFlagged] = useState(false);
+  const [timer, setTimer] = useState(45 * 60);
+
+  useEffect(() => {
+    if (isSubmitted) return;
+    const interval = setInterval(() => setTimer((t) => Math.max(0, t - 1)), 1000);
+    return () => clearInterval(interval);
+  }, [isSubmitted]);
+
+  const formatTime = (s: number) =>
+    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+  /* ── Loading ── */
+  if (isLoading) {
+    return (
+      <div className="max-w-[720px] mx-auto px-6 py-8">
+        <Skeleton className="h-2 rounded-full mb-8" />
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-8">
+          <Skeleton className="h-7 w-3/5 mb-3" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-4/5 mb-7" />
+          {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-[60px] rounded-[10px] mb-2.5" />)}
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Error ── */
+  if (error || !questions) {
+    return (
+      <div className="max-w-[720px] mx-auto px-6 py-8">
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
+          <XCircle className="w-10 h-10 text-destructive mx-auto mb-3" />
+          <p className="text-[15px] text-muted-foreground mb-4">Failed to load interview questions.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Empty ── */
+  if (questions.length === 0) {
+    return (
+      <div className="max-w-[720px] mx-auto px-6 py-8">
+        <div className="bg-card border border-border rounded-2xl shadow-sm p-10 text-center">
+          <p className="text-[15px] text-muted-foreground mb-4">No questions found for this interview.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 px-5 border border-border rounded-lg bg-card text-foreground cursor-pointer font-semibold text-[13.5px] hover:bg-muted transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Results view ── */
+  if (isSubmitted && submitInterview.data) {
+    const result = submitInterview.data;
+
+    return (
+      <div className="bg-background min-h-screen font-sans">
+        <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-16">
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mb-8">
+            Interview Results
+          </h1>
+
+          {/* Score — only real data */}
+          <div className="bg-card border border-border rounded-2xl p-10 shadow-sm mb-8 flex flex-col items-center text-center">
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4">
+              Your Score
+            </p>
+            <div className="flex items-end justify-center gap-3">
+              <span className="text-8xl font-black text-primary leading-none">{result.correctAnswers}</span>
+              <span className="text-4xl font-black text-muted-foreground mb-2">/ {result.totalQuestions}</span>
+            </div>
+            <p className="text-base text-muted-foreground mt-4">correct answers</p>
+          </div>
+
+          {/* Detailed review */}
+          <h2 className="text-lg font-bold text-foreground mb-1">Detailed Review</h2>
+          <p className="text-sm text-muted-foreground mb-5">
+            Review your answers and understand the correct solutions.
+          </p>
+          <div className="space-y-4">
+            {result.details.map((detail, idx) => (
+              <ReviewCard key={detail.questionId} idx={idx} detail={detail} />
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10">
+            <button
+              onClick={() => {
+                setIsSubmitted(false);
+                setAnswers([]);
+                setCurrentQuestionIndex(0);
+                setTimer(45 * 60);
+              }}
+              className="h-10 px-6 border border-border rounded-xl bg-card text-sm font-bold text-foreground cursor-pointer hover:bg-muted transition-colors flex items-center justify-center gap-2 shadow-sm"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Retake
+            </button>
+            <button
+              onClick={() => navigate("/jobs")}
+              className="h-10 px-8 rounded-xl bg-primary text-sm font-bold text-primary-foreground cursor-pointer hover:bg-primary/90 transition-all shadow-md"
+            >
+              Back to Jobs
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Assessment view ── */
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const progress = (currentQuestionIndex / questions.length) * 100;
+  const currentAnswer = answers.find((a) => a.questionId === currentQuestion.id);
+  const hasSelected = !!currentAnswer;
+
+  const handleSelectOption = (optionId: number) => {
+    setAnswers((prev) => {
+      const existing = prev.findIndex((a) => a.questionId === currentQuestion.id);
+      if (existing >= 0) {
+        const next = [...prev];
+        next[existing] = { questionId: currentQuestion.id, selectedOptionId: optionId };
+        return next;
+      }
+      return [...prev, { questionId: currentQuestion.id, selectedOptionId: optionId }];
+    });
+  };
+
+  const handleNext = () => {
+    if (isLastQuestion) {
+      if (!jobId) return;
+      submitInterview.mutate(
+        { jobId, request: { answers } },
+        { onSuccess: () => setIsSubmitted(true) }
+      );
+    } else {
+      setCurrentQuestionIndex((p) => p + 1);
+    }
+  };
+
+  const handlePrevious = () => setCurrentQuestionIndex((p) => Math.max(0, p - 1));
+  const timerWarning = timer < 5 * 60;
+
+  return (
+    <div className="bg-background min-h-screen font-sans">
+      <div className="max-w-[720px] mx-auto p-4 sm:p-8 pb-24">
+
+        {/* Top bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <span className="text-sm text-muted-foreground font-medium">
+            Technical Assessment <span className="mx-1 text-border">/</span>
+            <span className="text-foreground font-bold">React Core</span>
+          </span>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <button
+              onClick={() => setFlagged((f) => !f)}
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-4 border rounded-xl text-xs font-bold transition-all shadow-sm
+                ${flagged
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-500"
+                  : "bg-card border-border text-muted-foreground hover:bg-muted"
+                }`}
+            >
+              <Flag className="w-3.5 h-3.5" />
+              {flagged ? "Flagged" : "Flag"}
+            </button>
+            <div className={`flex items-center gap-2 h-9 px-4 border rounded-xl text-sm font-bold shadow-sm
+              ${timerWarning
+                ? "bg-red-500/10 border-red-500/30 text-red-500 animate-pulse"
+                : "bg-card border-border text-foreground"
+              }`}>
+              <Clock className="w-3.5 h-3.5" />
+              {formatTime(timer)}
+            </div>
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div className="mb-8">
+          <div className="flex justify-between text-xs font-bold text-muted-foreground mb-2 uppercase tracking-widest">
+            <span className="text-primary">Question {currentQuestionIndex + 1} of {questions.length}</span>
+            <span>{Math.round(progress)}% Done</span>
+          </div>
+          <div className="h-2 rounded-full bg-muted overflow-hidden shadow-inner">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Question card */}
+        <div className="bg-card border border-border rounded-2xl p-6 sm:p-10 shadow-sm mb-6">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-foreground leading-tight mb-10 tracking-tight">
+            {currentQuestion.question}
+          </h2>
+
+          <div className="space-y-3">
+            {currentQuestion.options.map((option) => {
+              const selected = currentAnswer?.selectedOptionId === option.id;
+              return (
+                <label
+                  key={option.id}
+                  onClick={() => handleSelectOption(option.id)}
+                  className={`flex items-center gap-4 p-4 sm:p-5 border-2 rounded-2xl cursor-pointer transition-all duration-200 group
+                    ${selected
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/40 bg-card hover:bg-muted/50"
+                    }`}
+                >
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all
+                    ${selected
+                      ? "border-primary bg-primary"
+                      : "border-muted-foreground/40 group-hover:border-primary/60 bg-background"
+                    }`}>
+                    {selected && <div className="w-2 h-2 rounded-full bg-primary-foreground shadow-sm" />}
+                  </div>
+                  <span className={`text-sm sm:text-base font-semibold leading-relaxed transition-colors
+                    ${selected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>
+                    {option.optionText}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between items-center pt-4">
+          <button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0 || submitInterview.isPending}
+            className="flex items-center gap-2 h-11 px-5 border border-border rounded-xl bg-card text-sm font-bold text-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-colors shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4" /> Previous
+          </button>
+
+          <button
+            onClick={handleNext}
+            disabled={!hasSelected || submitInterview.isPending}
+            className={`flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold transition-all shadow-md
+              ${!hasSelected || submitInterview.isPending
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95"
+              }`}
+          >
+            {submitInterview.isPending ? "Submitting..." : isLastQuestion ? "Submit Interview" : "Next Question"}
+            {!isLastQuestion && <ArrowRight className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InterviewPage;
+````
+
+## File: src/features/company/pages/JobApplicantsPage.tsx
+````typescript
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { usePermissions } from "@/features/auth/hooks/usePermissions";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import { useGetJobApplicants, useAcceptApplicant, useRejectApplicant } from "@/features/jobs/hooks/useJobs";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Skeleton } from "@/shared/components/ui/skeleton";
+import {
+  Mail, Phone, Calendar, Download,
+  Search, Users, AlertCircle, ChevronLeft, ChevronRight,
+  FileText, MoreHorizontal, CheckCircle, XCircle, Loader2,
+} from "lucide-react";
+import { env } from "@/lib/env";
+import { cn } from "@/lib/utils";
+import { SubmissionStatus } from "@/features/jobs/types/jobs";
+
+const getFullUrl = (path: string | null | undefined, apiBase: string) => {
+  if (!path) return "";
+  if (path.startsWith("http") || path.startsWith("blob:")) return path;
+  const base = apiBase.replace("/api", "");
+  return `${base}/${path.replace(/\\/g, "/")}`;
+};
+
+function formatDate(d: string) {
+  if (!d) return "N/A";
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function getDaysAgo(d: string) {
+  if (!d) return "";
+  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86_400_000);
+  return days === 0 ? "Today" : days === 1 ? "Yesterday" : `${days} days ago`;
+}
+
+/** Normalize status from backend (string OR number OR undefined) → numeric SubmissionStatus */
+function normalizeStatus(status: unknown): number {
+  if (status === null || status === undefined) return SubmissionStatus.Pending;
+  if (typeof status === "number") return status;
+  const map: Record<string, number> = {
+    Pending: SubmissionStatus.Pending,
+    Accepted: SubmissionStatus.Accepted,
+    Rejected: SubmissionStatus.Rejected,
+  };
+  return map[status as string] ?? SubmissionStatus.Pending;
+}
+
+
+const ApplicantSkeleton = () => (
+  <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-6">
+    <div className="flex items-start gap-4">
+      <Skeleton className="w-14 h-14 rounded-2xl shrink-0" />
+      <div className="flex-1 space-y-3">
+        <Skeleton className="h-5 w-3/4 rounded-lg" />
+        <Skeleton className="h-4 w-1/2 rounded-lg" />
+      </div>
+    </div>
+    <div className="space-y-3">
+      <Skeleton className="h-20 w-full rounded-2xl" />
+    </div>
+    <div className="flex gap-3">
+      <Skeleton className="h-11 flex-1 rounded-xl" />
+      <Skeleton className="h-11 flex-1 rounded-xl" />
+    </div>
+  </div>
+);
+
+const JobApplicantsPage: React.FC = () => {
+  const { jobId } = useParams<{ jobId: string }>();
+  const navigate = useNavigate();
+  const { isCompany, companyId } = usePermissions();
+  const acceptMutation = useAcceptApplicant();
+  const rejectMutation = useRejectApplicant();
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedSearch = useDebounce(searchValue, 400);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10);
+
+  useEffect(() => {
+    if (!isCompany) navigate("/");
+  }, [isCompany, navigate]);
+
+  const { data, isLoading, error } = useGetJobApplicants(jobId ?? "", {
+    searchValue: debouncedSearch,
+    pageNumber,
+    pageSize,
+  });
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    setPageNumber(1);
+  };
+
+  const applicants = data?.items ?? [];
+  const total = data?.totalCount ?? 0;
+
+  if (!isCompany) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="space-y-1.5">
+            <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+              Job Applicants
+            </h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                Senior Product Designer
+              </span>
+              {!isLoading && !error && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20 shadow-sm">
+                  {total} Candidates
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex-1 md:flex-none relative group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              </div>
+              <Input
+                placeholder="Search candidates..."
+                value={searchValue}
+                onChange={handleSearch}
+                className="pl-12 w-full md:w-72 lg:w-96 h-12 bg-card border-border shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-2xl transition-all text-base"
+              />
+              {searchValue && (
+                <button
+                  onClick={() => {
+                    setSearchValue("");
+                    setPageNumber(1);
+                  }}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <AlertCircle className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+            <Button
+              variant="outline"
+              className="rounded-2xl border-border text-muted-foreground h-12 w-12 p-0 shrink-0 bg-card hover:bg-accent shadow-sm transition-all"
+            >
+              <MoreHorizontal className="w-6 h-6" />
+            </Button>
+          </div>
+        </div>
+
+        {isLoading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ApplicantSkeleton key={i} />
+            ))}
+          </div>
+        )}
+
+        {error && (
+          <div className="flex flex-col items-center justify-center py-24 px-6 text-center bg-card rounded-[2.5rem] border border-border shadow-xl">
+            <div className="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center mb-8 animate-pulse">
+              <AlertCircle className="w-10 h-10 text-destructive" />
+            </div>
+            <h3 className="text-2xl font-black text-foreground mb-3">
+              Unable to load applicants
+            </h3>
+            <p className="text-muted-foreground mb-10 max-w-md text-lg leading-relaxed">
+              We encountered a technical issue while fetching the candidates list. Please check your connection and try again.
+            </p>
+            <Button
+              variant="default"
+              onClick={() => window.location.reload()}
+              className="rounded-2xl px-10 h-14 bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
+            >
+              Retry Connection
+            </Button>
+          </div>
+        )}
+
+        {!isLoading && !error && applicants.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-24 px-6 text-center bg-card rounded-[2.5rem] border border-border shadow-xl">
+            <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center mb-8">
+              <Users className="w-12 h-12 text-muted-foreground/30" />
+            </div>
+            <h3 className="text-2xl font-black text-foreground mb-3">
+              {searchValue ? "No matching candidates" : "No applications yet"}
+            </h3>
+            <p className="text-muted-foreground max-w-md text-lg leading-relaxed">
+              {searchValue
+                ? `We couldn't find any applicants matching "${searchValue}". Try using broader search terms.`
+                : "It looks like no one has applied for this position yet."}
+            </p>
+            {searchValue && (
+              <Button
+                variant="outline"
+                onClick={() => setSearchValue("")}
+                className="mt-10 rounded-2xl px-8 h-12 border-border text-muted-foreground font-bold hover:bg-accent transition-all"
+              >
+                Clear all filters
+              </Button>
+            )}
+          </div>
+        )}
+
+        {!isLoading && !error && applicants.length > 0 && (
+          <div className="space-y-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {applicants.map((applicant, idx) => {
+                const cvUrl = getFullUrl(applicant.cvPath || applicant.cVPath, env.API_BASE_URL);
+                const imgUrl = getFullUrl(applicant.applicantImageUrl, env.API_BASE_URL);
+                const initials = (applicant.applicantName ?? "?")
+                  .split(" ")
+                  .map((n: string) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
+
+                return (
+                  <div
+                    key={applicant.id}
+                    className="group bg-card border border-border rounded-[2rem] shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden flex flex-col"
+                    style={{ animationDelay: `${idx * 50}ms` }}
+                  >
+                    <div className="p-8 flex-1 flex flex-col">
+                      <div className="flex items-start justify-between gap-4 mb-6">
+                        <div
+                          className="flex items-center gap-4 cursor-pointer min-w-0"
+                          onClick={() => {
+                            const id = (applicant as any).applicantionId ||
+                              (applicant as any).applicantId ||
+                              (applicant as any).ApplicantId ||
+                              (applicant as any).userId ||
+                              (applicant as any).UserId ||
+                              applicant.id;
+
+                            if (id && id !== "undefined") {
+                              navigate(`/profile/${id}`);
+                            }
+                          }}
+                        >
+                          <div className="relative shrink-0">
+                            {imgUrl ? (
+                              <img
+                                src={imgUrl}
+                                alt={applicant.applicantName}
+                                className="w-16 h-16 rounded-2xl object-cover ring-4 ring-muted group-hover:ring-primary/20 transition-all duration-500"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center ring-4 ring-muted group-hover:ring-primary/20 transition-all duration-500">
+                                <span className="text-xl font-black text-muted-foreground/50">
+                                  {initials}
+                                </span>
+                              </div>
+                            )}
+                            <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-4 border-card rounded-full shadow-sm" />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3 className="font-black text-foreground text-lg leading-tight truncate group-hover:text-primary transition-colors">
+                              {applicant.applicantName}
+                            </h3>
+                            <div className="flex flex-col gap-1 mt-1.5">
+                              <span className="text-xs font-medium text-muted-foreground flex items-center gap-2 truncate">
+                                <Mail className="w-4 h-4 shrink-0 opacity-40" />
+                                <span className="truncate">{applicant.applicantEmail}</span>
+                              </span>
+                              {applicant.phone && (
+                                <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                  <Phone className="w-4 h-4 shrink-0 opacity-40" />
+                                  {applicant.phone}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground hover:text-foreground hover:bg-accent h-10 w-10 p-0 rounded-xl shrink-0 transition-all"
+                        >
+                          <MoreHorizontal className="w-6 h-6" />
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 mb-6 py-4 border-y border-border/50">
+                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground/60">
+                          <Calendar className="w-4 h-4 text-muted-foreground/45" />
+                          <span className="uppercase tracking-wider">Applied {formatDate(applicant.appliedAt)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* Status badge */}
+                          <span className={cn(
+                            "text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border",
+                            normalizeStatus(applicant.status) === SubmissionStatus.Accepted
+                              ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                              : normalizeStatus(applicant.status) === SubmissionStatus.Rejected
+                              ? "bg-destructive/10 text-destructive border-destructive/20"
+                              : "bg-primary/5 text-primary border-primary/10"
+                          )}>
+                            {normalizeStatus(applicant.status) === SubmissionStatus.Accepted
+                              ? "✓ Accepted"
+                              : normalizeStatus(applicant.status) === SubmissionStatus.Rejected
+                              ? "✗ Rejected"
+                              : getDaysAgo(applicant.appliedAt)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 mb-8">
+                        <h4 className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mb-3 px-1">
+                          Applicant Summary
+                        </h4>
+                        <div className="bg-muted/50 rounded-3xl p-5 border border-border/50 group-hover:bg-primary/5 transition-colors duration-500">
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4 italic font-medium">
+                            {applicant.notes
+                              ? `"${applicant.notes}"`
+                              : "No professional notes provided."}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-3 mt-auto pt-2">
+                        {/* Accept / Reject actions — hidden when already decided */}
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Pending && (() => {
+                          // Track loading per-card using mutation.variables
+                          const isAccepting = acceptMutation.isPending && acceptMutation.variables?.submissionId === applicant.id;
+                          const isRejecting = rejectMutation.isPending && rejectMutation.variables?.submissionId === applicant.id;
+                          const isBusy = isAccepting || isRejecting;
+                          return (
+                            <div className="flex gap-3">
+                              <Button
+                                size="lg"
+                                className="flex-1 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-black gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-60"
+                                disabled={isBusy}
+                                onClick={() =>
+                                  companyId && jobId &&
+                                  acceptMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                                }
+                              >
+                                {isAccepting ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="w-4 h-4" />
+                                )}
+                                Accept
+                              </Button>
+                              <Button
+                                size="lg"
+                                variant="destructive"
+                                className="flex-1 h-12 rounded-2xl text-sm font-black gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
+                                disabled={isBusy}
+                                onClick={() =>
+                                  companyId && jobId &&
+                                  rejectMutation.mutate({ companyId, jobId, submissionId: applicant.id })
+                                }
+                              >
+                                {isRejecting ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <XCircle className="w-4 h-4" />
+                                )}
+                                Reject
+                              </Button>
+                            </div>
+                          );
+                        })()}
+
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Accepted && (
+                          <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-black">
+                            <CheckCircle className="w-4 h-4" /> Application Accepted
+                          </div>
+                        )}
+                        {normalizeStatus(applicant.status) === SubmissionStatus.Rejected && (
+                          <div className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-black">
+                            <XCircle className="w-4 h-4" /> Application Rejected
+                          </div>
+                        )}
+                        {/* CV download */}
+                        <Button
+                          size="lg"
+                          className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-black gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all"
+                          onClick={() => cvUrl && window.open(cvUrl, "_blank")}
+                          disabled={!cvUrl}
+                        >
+                          <Download className="w-4 h-4" /> Download CV
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {data && data.totalPages > 1 && (
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-6 pb-10">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setPageNumber((p) => p - 1)}
+                  disabled={!data.hasPreviousPage}
+                  className="w-12 h-12 rounded-2xl border-border shadow-sm hover:shadow-md transition-all disabled:opacity-30"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  {Array.from(
+                    { length: Math.min(data.totalPages, 5) },
+                    (_, i) => {
+                      const page = i + 1;
+                      const isCurrent = page === pageNumber;
+                      return (
+                        <Button
+                          key={page}
+                          variant={isCurrent ? "default" : "outline"}
+                          size="icon"
+                          onClick={() => setPageNumber(page)}
+                          className={cn(
+                            "w-12 h-12 rounded-2xl font-black text-sm shadow-sm transition-all duration-300",
+                            isCurrent
+                              ? "bg-primary hover:bg-primary/90 border-none scale-110 shadow-primary/20 shadow-lg text-primary-foreground"
+                              : "border-border text-muted-foreground hover:bg-accent"
+                          )}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    }
+                  )}
+
+                  {data.totalPages > 5 && (
+                    <>
+                      <span className="px-2 text-muted-foreground font-black">...</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setPageNumber(data.totalPages)}
+                        className="w-12 h-12 rounded-2xl border-border text-muted-foreground font-black shadow-sm"
+                      >
+                        {data.totalPages}
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setPageNumber((p) => p + 1)}
+                  disabled={!data.hasNextPage}
+                  className="w-12 h-12 rounded-2xl border-border shadow-sm hover:shadow-md transition-all disabled:opacity-30"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default JobApplicantsPage;
 ````
